@@ -1,0 +1,266 @@
+================================================================
+  AVANTHI COLLEGE ASSISTANT — PROJECT DOCUMENTATION
+================================================================
+College  : Avanthi Institute of Engineering & Technology
+           Narsipatnam, Anakapalli District, AP - 531116
+Project  : AI-powered College Chatbot
+Language : Python 3.11
+Framework: Streamlit
+================================================================
+
+
+----------------------------------------------------------------
+1. PROJECT OVERVIEW
+----------------------------------------------------------------
+The Avanthi College Assistant is a web-based AI chatbot built
+using Streamlit. It answers student queries about the college —
+faculty, departments, labs, fees, bus routes, events, hostel,
+library, placements, CRT, and more.
+
+It uses a sentence-embedding model to understand natural language
+queries and match them to predefined intents, then returns the
+appropriate response. No external API keys are required.
+
+
+----------------------------------------------------------------
+2. PROJECT STRUCTURE
+----------------------------------------------------------------
+ai_chatbott/
+│
+├── app.py                  → Main application (entire chatbot logic + UI)
+├── requirements.txt        → Python dependencies
+├── .gitignore              → Excludes venv, pkl files, etc.
+│
+├── data/
+│   └── intents.json        → All intents (patterns + responses)
+│
+└── model/
+    └── embeddings_v15.pkl  → Pre-computed sentence embeddings (local only)
+
+
+----------------------------------------------------------------
+3. LIBRARIES & TOOLS USED
+----------------------------------------------------------------
+
+a) Streamlit
+   - What it is : Python framework for building web apps
+   - How used   : Renders the entire chatbot UI — chat window,
+                  input form, buttons, header, CSS styling
+   - Version    : Latest stable
+
+b) sentence-transformers (all-MiniLM-L6-v2)
+   - What it is : A pre-trained NLP model from HuggingFace that
+                  converts text into 384-dimensional vectors
+                  (called embeddings)
+   - How used   : Encodes all intent patterns at startup into
+                  embeddings. When user sends a message, it
+                  encodes that too and finds the closest match
+                  using cosine similarity
+   - Model size : ~90 MB (downloaded once from HuggingFace)
+
+c) scikit-learn (cosine_similarity)
+   - What it is : Machine learning library
+   - How used   : Computes cosine similarity between the user
+                  query embedding and all pattern embeddings to
+                  find the best matching intent
+
+d) numpy
+   - What it is : Numerical computing library
+   - How used   : Handles embedding arrays and argmax operations
+
+e) markdown
+   - What it is : Python markdown renderer
+   - How used   : Converts bot responses (which use markdown
+                  formatting like **bold**, tables, bullet lists)
+                  into HTML for display in the chat window
+
+f) pyttsx3 (Windows only)
+   - What it is : Offline text-to-speech library
+   - How used   : Reads bot responses aloud when voice output
+                  is turned ON. Uses Windows SAPI voices (Zira
+                  or any female voice). Runs as a subprocess
+                  so it doesn't block the UI
+
+g) SpeechRecognition + Google Speech API
+   - What it is : Library to capture microphone audio and
+                  convert it to text using Google's free API
+   - How used   : When user clicks "Speak" button, it listens
+                  for up to 8 seconds and sends the audio to
+                  Google for transcription. No API key needed.
+   - Note       : Only works on Windows (local). Disabled on
+                  cloud deployment.
+
+h) difflib (get_close_matches)
+   - What it is : Python standard library for fuzzy matching
+   - How used   : Typo correction — if user types "facutly"
+                  it corrects it to "faculty" before processing
+
+i) pickle
+   - What it is : Python serialization library
+   - How used   : Saves and loads pre-computed embeddings to/from
+                  disk so the model doesn't re-encode 1100+
+                  patterns on every restart
+
+
+----------------------------------------------------------------
+4. HOW THE CHATBOT WORKS — STEP BY STEP
+----------------------------------------------------------------
+
+Step 1 — STARTUP (load_model)
+  - Reads all intents from data/intents.json
+  - Extracts every pattern (e.g. "cse faculty", "bus routes")
+  - Loads the sentence-transformer model (all-MiniLM-L6-v2)
+  - If embeddings_v15.pkl exists → loads pre-computed embeddings
+  - If not → encodes all patterns and saves to pkl for next time
+  - Result: ~1134 pattern embeddings ready in memory
+
+Step 2 — USER INPUT
+  - User types a message and clicks Send (or presses Enter)
+  - Input goes through normalize() → slang words replaced
+    e.g. "clg" → "college", "abt" → "about"
+
+Step 3 — GIBBERISH CHECK (is_gibberish)
+  - Checks if input has real English words
+  - If less than 50% real words → returns a "rephrase" message
+  - Catches random keyboard smashing like "asdfgh"
+
+Step 4 — CONTEXT RESOLUTION (resolve_context)
+  - Checks if input is a known lab keyword (LAB_DIRECT_TAG)
+    e.g. "vlsi" → directly returns tag "vlsi_lab"
+  - Checks if input contains a department name (cse/ece/eee etc.)
+  - Checks if input contains a topic keyword (faculty/syllabus etc.)
+  - Combines dept + topic to return a direct tag
+    e.g. "cse faculty" → "cse_faculty" (no embedder needed)
+  - Tracks last_dept and last_topic in session state for
+    follow-up queries like "what about their syllabus?"
+
+Step 5 — EMBEDDING MATCH (if no direct tag)
+  - Runs typo correction on the query
+  - Encodes the query using sentence-transformer
+  - Computes cosine similarity against all 1134 pattern embeddings
+  - Picks the highest similarity match
+  - If similarity < 0.40 → returns "I'm not sure" message
+
+Step 6 — RESPONSE
+  - Finds the matched intent in intents.json
+  - Returns a random response from that intent's responses list
+  - Special case: "events" intent checks current month and
+    returns the relevant event if one is happening
+
+Step 7 — VOICE OUTPUT (optional)
+  - If voice is ON, speak_text() strips markdown from response
+    and reads it aloud using pyttsx3 in a subprocess
+  - Previous TTS process is killed before starting new one
+
+
+----------------------------------------------------------------
+5. INTENTS SYSTEM (data/intents.json)
+----------------------------------------------------------------
+The intents.json file is the knowledge base of the chatbot.
+Each intent has:
+  - tag      : unique identifier (e.g. "cse_faculty")
+  - patterns : list of example queries that map to this intent
+  - responses: list of answers (one is picked randomly)
+
+Total intents: ~70+
+Categories:
+  - Departments    : cse, ece, eee, mech, csd, csm
+  - Faculty        : per dept + per subject (vlsi, cd, flat, etc.)
+  - Syllabus       : per department
+  - Labs           : 15+ individual labs
+  - Fees           : fee structure, payment, building fee
+  - Bus            : routes, fees
+  - Events         : monthly events
+  - Hostel, Gym, Library, CRT, Placements
+  - General        : greeting, goodbye, capabilities, etc.
+
+
+----------------------------------------------------------------
+6. CONTEXT TRACKING SYSTEM
+----------------------------------------------------------------
+The bot remembers conversation context using Streamlit session state:
+
+  last_dept  → last department mentioned (cse/ece/eee/mech/csd/csm)
+  last_topic → last topic (syllabus/faculty/course_info)
+  last_tag   → last matched intent tag
+
+This allows follow-up queries:
+  User: "cse faculty"     → shows CSE faculty
+  User: "what about ece?" → shows ECE faculty (same topic)
+  User: "syllabus"        → shows ECE syllabus (same dept)
+
+
+----------------------------------------------------------------
+7. UI COMPONENTS
+----------------------------------------------------------------
+Header     : Dark navy bar with college name and subtitle
+Chat area  : Custom HTML/CSS rendered via components.html
+             - User messages: right-aligned, dark navy bubble
+             - Bot messages : left-aligned, white bubble with shadow
+             - Auto-scrolls to latest message
+             - Supports markdown tables, bold, bullet lists
+Input row  : Streamlit form with 5 elements:
+             [Text input] [Send] [🔊/🔇] [Speak] [Clear]
+             - Enter key submits the form
+             - Voice toggle: ON/OFF for TTS output
+             - Speak: microphone input (Windows only)
+             - Clear: resets chat and kills TTS
+
+
+----------------------------------------------------------------
+8. DEPLOYMENT
+----------------------------------------------------------------
+Platform   : Streamlit Community Cloud (share.streamlit.io)
+Repo       : github.com/ganeshkodigudla047/ai_chatbott
+Branch     : master
+Entry file : app.py
+
+Cloud notes:
+  - pyttsx3 (TTS) disabled on Linux/cloud (Windows only)
+  - SpeechRecognition disabled on cloud (no microphone)
+  - Embeddings pkl not saved on cloud (read-only filesystem)
+    → model re-encodes patterns on each cold start (~30 sec)
+  - No API keys required
+
+
+----------------------------------------------------------------
+9. HOW TO RUN LOCALLY
+----------------------------------------------------------------
+1. Clone the repo:
+   git clone https://github.com/ganeshkodigudla047/ai_chatbott.git
+
+2. Create virtual environment:
+   python -m venv venv
+   venv\Scripts\activate        (Windows)
+
+3. Install dependencies:
+   pip install -r requirements.txt
+   pip install pyttsx3 SpeechRecognition pyaudio   (Windows extras)
+
+4. Run the app:
+   streamlit run app.py
+
+5. Open browser at: http://localhost:8501
+
+
+----------------------------------------------------------------
+10. WHAT THE BOT CAN ANSWER
+----------------------------------------------------------------
+- College info, address, history, chairman, principal
+- Department details (CSE, ECE, EEE, Mech, CSD, CSM)
+- Faculty lists and individual subject teachers
+- HOD details for each department
+- Syllabus / subjects per department
+- Lab locations and details (15+ labs)
+- Fee structure, fee payment (Parent Portal App)
+- Bus routes and bus fees
+- Exam schedule, results, revaluation, supply exams
+- Hostel, gym, library details
+- CRT training details
+- Placement statistics
+- College events (monthly calendar)
+- General queries (greeting, capabilities, etc.)
+
+================================================================
+  END OF DOCUMENTATION
+================================================================
