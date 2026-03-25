@@ -427,6 +427,13 @@ if _tts_out:
 # ── Input row ──────────────────────────────────────────────────────────────────
 st.markdown('<div style="background:#f0f4f8;border-top:1px solid #dde3f0;padding-top:4px">', unsafe_allow_html=True)
 
+# Handle mic query param
+_mic_qp = st.query_params.get("mic", "")
+if _mic_qp:
+    st.query_params.clear()
+    st.session_state["_mic_prefill"] = _mic_qp
+    st.rerun()
+
 if st.session_state.get("_toggle_voice"):
     st.session_state["_toggle_voice"] = False
     st.session_state.voice_output = not st.session_state.voice_output
@@ -435,24 +442,12 @@ _voice_on = st.session_state.get("voice_output", False)
 _voice_label = "🔊 ON" if _voice_on else "🔇 OFF"
 _prefill = st.session_state.pop("_mic_prefill", "") if "_mic_prefill" in st.session_state else ""
 
-# CSS: pull the mic iframe up to overlap the right side of the input box
+# CSS: make input column relative so mic iframe can overlap it
 st.markdown("""<style>
-/* position mic iframe over the input right edge */
-div[data-testid="stForm"] { position: relative; }
-iframe[title="components.html"] {
-    position: absolute !important;
-    right: 52px !important;
-    top: 50% !important;
-    transform: translateY(-50%) !important;
-    width: 36px !important;
-    height: 36px !important;
-    border: none !important;
-    background: transparent !important;
-    z-index: 999 !important;
-    pointer-events: all !important;
+div[data-testid="stForm"] > div > div[data-testid="stHorizontalBlock"] > div:first-child {
+    position: relative !important;
 }
-/* pad input so text doesn't go under mic icon */
-div[data-testid="stTextInput"] input { padding-right: 38px !important; }
+div[data-testid="stTextInput"] input { padding-right: 36px !important; }
 </style>""", unsafe_allow_html=True)
 
 with st.form("chat_form", clear_on_submit=True):
@@ -460,35 +455,43 @@ with st.form("chat_form", clear_on_submit=True):
     user_input = ci.text_input("msg", label_visibility="collapsed",
                                placeholder="💬 Type your message...",
                                value=_prefill, key="user_msg_form")
-    send  = c_send.form_submit_button("Send",       use_container_width=True)
+    send  = c_send.form_submit_button("Send",        use_container_width=True)
     voice = c_voice.form_submit_button(_voice_label, use_container_width=True)
-    clear = c_clear.form_submit_button("Clear",     use_container_width=True)
+    clear = c_clear.form_submit_button("Clear",      use_container_width=True)
     if voice: st.session_state["_toggle_voice"] = True; st.rerun()
     if send and user_input.strip(): process(user_input.strip()); st.rerun()
     if clear: clear_chat(); st.rerun()
 
-# Mic component — on result, stores in session via query param and reruns
-_mic_qp = st.query_params.get("mic", "")
-if _mic_qp:
-    st.query_params.clear()
-    st.session_state["_mic_prefill"] = _mic_qp
-    st.rerun()
+# Mic iframe — absolutely positioned over the right end of the input
+st.markdown("""<style>
+/* pull the mic iframe up into the input row */
+iframe[title="components.html"] {
+    position: absolute !important;
+    right: 220px !important;
+    bottom: 8px !important;
+    width: 32px !important;
+    height: 32px !important;
+    border: none !important;
+    background: transparent !important;
+    z-index: 1000 !important;
+}
+</style>""", unsafe_allow_html=True)
 
 components.html("""
 <style>
   html,body{margin:0;padding:0;background:transparent;overflow:hidden;
             display:flex;align-items:center;justify-content:center;height:100%;}
-  #m{background:none;border:none;cursor:pointer;font-size:19px;
-     padding:0;opacity:0.55;transition:opacity .15s,transform .15s;}
-  #m:hover{opacity:1;transform:scale(1.15);}
+  #m{background:none;border:none;cursor:pointer;font-size:18px;
+     padding:0;opacity:0.5;transition:opacity .15s,transform .15s;line-height:1;}
+  #m:hover{opacity:1;transform:scale(1.2);}
   #m.on{opacity:1;animation:p .6s infinite;}
-  @keyframes p{0%,100%{opacity:1}50%{opacity:.2}}
+  @keyframes p{0%,100%{opacity:1}50%{opacity:.15}}
 </style>
 <button id="m" onclick="go()" title="Speak">🎤</button>
 <script>
 function go(){
   var SR=window.SpeechRecognition||window.webkitSpeechRecognition;
-  if(!SR){alert("Use Chrome or Edge");return;}
+  if(!SR){alert("Use Chrome or Edge for mic");return;}
   var b=document.getElementById("m"),r=new SR();
   r.lang="en-IN";r.interimResults=false;r.maxAlternatives=1;
   b.classList.add("on");b.textContent="🔴";
@@ -496,14 +499,17 @@ function go(){
   r.onresult=function(e){
     var t=e.results[0][0].transcript;
     b.classList.remove("on");b.textContent="🎤";
-    // Navigate parent to set query param
-    var url=new URL(window.top.location.href);
-    url.searchParams.set("mic",t);
-    window.top.location.href=url.toString();
+    try{
+      var url=new URL(window.top.location.href);
+      url.searchParams.set("mic",t);
+      window.top.location.href=url.toString();
+    }catch(err){
+      window.parent.postMessage({type:"mic_result",text:t},"*");
+    }
   };
   r.onerror=function(){b.classList.remove("on");b.textContent="🎤";};
   r.onend=function(){b.classList.remove("on");if(b.textContent==="🔴")b.textContent="🎤";};
 }
 </script>
-""", height=36, scrolling=False)
+""", height=32, scrolling=False)
 st.markdown('</div>', unsafe_allow_html=True)
