@@ -431,86 +431,91 @@ if st.session_state.get("_toggle_voice"):
     st.session_state["_toggle_voice"] = False
     st.session_state.voice_output = not st.session_state.voice_output
 
-voice_label = "🔊 ON" if st.session_state.voice_output else "🔇 OFF"
-
-# Handle mic transcript — put it in the input box
-_mic_text = st.query_params.get("mic", "")
-if _mic_text:
-    st.query_params.clear()
-    st.session_state["_mic_prefill"] = _mic_text
-    st.rerun()
-
-# Pre-fill input with mic text if available
+_voice_on = st.session_state.get("voice_output", False)
+_voice_label = "🔊 ON" if _voice_on else "🔇 OFF"
+_voice_color = "#dcfce7" if _voice_on else "#fff"
 _prefill = st.session_state.pop("_mic_prefill", "") if "_mic_prefill" in st.session_state else ""
 
-# CSS: overlay mic icon inside the text input on the right
-st.markdown("""<style>
-div[data-testid="stTextInput"] { position: relative !important; }
-div[data-testid="stTextInput"] input { padding-right: 40px !important; }
-</style>""", unsafe_allow_html=True)
-
+# Streamlit form — hidden visually, submitted by JS
 with st.form("chat_form", clear_on_submit=True):
-    ci, c_send, c_voice, c_clear = st.columns([5, 1, 1, 1])
+    ci, c_send, c_voice, c_clear = st.columns([5,1,1,1])
     user_input = ci.text_input("msg", label_visibility="collapsed",
-                               placeholder="💬 Type your message...",
-                               value=_prefill,
-                               key="user_msg_form")
-    send  = c_send.form_submit_button("Send",       use_container_width=True)
-    voice = c_voice.form_submit_button(voice_label, use_container_width=True)
-    clear = c_clear.form_submit_button("Clear",     use_container_width=True)
+                               placeholder="msg", value=_prefill, key="user_msg_form")
+    send  = c_send.form_submit_button("Send")
+    voice = c_voice.form_submit_button(_voice_label)
+    clear = c_clear.form_submit_button("Clear")
+    if voice: st.session_state["_toggle_voice"] = True; st.rerun()
+    if send and user_input.strip(): process(user_input.strip()); st.rerun()
+    if clear: clear_chat(); st.rerun()
 
-    if voice:
-        st.session_state["_toggle_voice"] = True; st.rerun()
-    if send and user_input.strip():
-        process(user_input.strip()); st.rerun()
-    if clear:
-        clear_chat(); st.rerun()
-
-# Mic icon overlaid inside the input box using absolute positioning
-components.html("""
-<style>
-  body { margin:0; padding:0; background:transparent; overflow:hidden; }
-  #micBtn {
-    position:fixed; right:10px; top:50%; transform:translateY(-50%);
-    background:none; border:none; cursor:pointer;
-    font-size:18px; line-height:1; padding:0;
-    opacity:0.5; transition:opacity .15s;
-  }
-  #micBtn:hover { opacity:1; }
-  #micBtn.listening { opacity:1; animation:pulse 0.8s infinite; }
-  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
+# Hide the Streamlit form and overlay our custom HTML input row
+st.markdown(f"""<style>
+/* hide native form */
+div[data-testid="stForm"] {{ display:none !important; }}
 </style>
-<button id="micBtn" onclick="startMic()" title="Speak">🎤</button>
+<div style="display:flex;gap:6px;align-items:center;padding:2px 0 4px;">
+  <div style="flex:1;position:relative;display:flex;align-items:center;
+              background:#f8faff;border:2px solid #d0d7e8;border-radius:24px;
+              padding:0 40px 0 14px;height:42px;" id="inputWrap">
+    <input id="msgInput" type="text" placeholder="💬 Type your message..."
+           value="{_prefill}"
+           style="flex:1;border:none;outline:none;background:transparent;
+                  font-size:14px;color:#1a1a2e;"
+           onkeydown="if(event.key==='Enter')sendMsg()"/>
+    <button onclick="startMic()" title="Speak"
+            id="micBtn"
+            style="position:absolute;right:10px;background:none;border:none;
+                   cursor:pointer;font-size:17px;padding:0;opacity:0.5;">🎤</button>
+  </div>
+  <button onclick="sendMsg()"
+          style="background:#fff;border:1.5px solid #d0d7e8;border-radius:20px;
+                 padding:0 16px;height:42px;font-size:13px;color:#1e2a4a;cursor:pointer;">Send</button>
+  <button onclick="toggleVoice()"
+          style="background:{_voice_color};border:1.5px solid #d0d7e8;border-radius:20px;
+                 padding:0 16px;height:42px;font-size:13px;color:#1e2a4a;cursor:pointer;">{_voice_label}</button>
+  <button onclick="clearChat()"
+          style="background:#fff;border:1.5px solid #d0d7e8;border-radius:20px;
+                 padding:0 16px;height:42px;font-size:13px;color:#1e2a4a;cursor:pointer;">Clear</button>
+</div>
 <script>
-function startMic() {
+function fillAndSubmit(txt, btnId) {{
+  // Find the hidden Streamlit input and submit button, fill and click
+  var inputs = window.parent.document.querySelectorAll('input[data-testid="stTextInput"]');
+  var btns = window.parent.document.querySelectorAll('button[kind="formSubmit"], button[data-testid="baseButton-secondaryFormSubmit"]');
+  if(inputs.length > 0) {{
+    var nativeInput = inputs[0];
+    var nativeSetter = Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype, 'value').set;
+    nativeSetter.call(nativeInput, txt);
+    nativeInput.dispatchEvent(new Event('input', {{bubbles:true}}));
+  }}
+  // Click the right submit button
+  var allBtns = window.parent.document.querySelectorAll('button');
+  for(var i=0;i<allBtns.length;i++) {{
+    if(allBtns[i].innerText.trim() === btnId) {{ allBtns[i].click(); break; }}
+  }}
+}}
+function sendMsg() {{
+  var txt = document.getElementById("msgInput").value.trim();
+  if(txt) fillAndSubmit(txt, "Send");
+}}
+function toggleVoice() {{ fillAndSubmit("", "{_voice_label}"); }}
+function clearChat() {{ fillAndSubmit("", "Clear"); }}
+function startMic() {{
   var SR = window.SpeechRecognition || window.webkitSpeechRecognition;
-  if (!SR) { alert("Use Chrome or Edge for mic support."); return; }
+  if(!SR){{ alert("Use Chrome or Edge for mic."); return; }}
   var btn = document.getElementById("micBtn");
+  var inp = document.getElementById("msgInput");
   var r = new SR();
-  r.lang = "en-IN";
-  r.interimResults = false;
-  r.maxAlternatives = 1;
-  btn.classList.add("listening");
-  btn.innerText = "🔴";
+  r.lang = "en-IN"; r.interimResults = false; r.maxAlternatives = 1;
+  btn.style.opacity="1"; btn.innerText="🔴";
   r.start();
-  r.onresult = function(e) {
-    var txt = e.results[0][0].transcript;
-    btn.classList.remove("listening");
-    btn.innerText = "🎤";
-    var url = new URL(window.parent.location.href);
-    url.searchParams.set("mic", txt);
-    window.parent.location.href = url.toString();
-  };
-  r.onerror = function() {
-    btn.classList.remove("listening");
-    btn.innerText = "🎤";
-  };
-  r.onend = function() {
-    btn.classList.remove("listening");
-    if(btn.innerText === "🔴") btn.innerText = "🎤";
-  };
-}
-</script>
-""", height=42, scrolling=False)
-
+  r.onresult = function(e) {{
+    inp.value = e.results[0][0].transcript;
+    btn.style.opacity="0.5"; btn.innerText="🎤";
+  }};
+  r.onerror = function() {{ btn.style.opacity="0.5"; btn.innerText="🎤"; }};
+  r.onend = function() {{ if(btn.innerText==="🔴"){{ btn.style.opacity="0.5"; btn.innerText="🎤"; }} }};
+}}
+document.getElementById("msgInput").focus();
+</script>""", unsafe_allow_html=True)
 st.markdown('</div>', unsafe_allow_html=True)
