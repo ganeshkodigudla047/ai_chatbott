@@ -80,7 +80,10 @@ VOCAB = build_vocab("v15")
 _tts_proc = None
 
 def speak_text(text):
-    import re, subprocess, sys, tempfile, os
+    import sys
+    if sys.platform != "win32":
+        return  # TTS only supported on Windows
+    import re, subprocess, tempfile, os
     global _tts_proc
     if _tts_proc is not None:
         try: _tts_proc.kill(); _tts_proc.wait(timeout=1)
@@ -114,9 +117,12 @@ def speak_text(text):
     st.session_state["_tts_pid"] = _tts_proc.pid
 
 def recognize_speech():
-    import speech_recognition as sr
-    r = sr.Recognizer()
+    import sys
+    if sys.platform != "win32":
+        return ""  # Microphone not supported on cloud
     try:
+        import speech_recognition as sr
+        r = sr.Recognizer()
         with sr.Microphone() as source:
             r.adjust_for_ambient_noise(source, duration=0.5)
             audio = r.listen(source, timeout=8, phrase_time_limit=10)
