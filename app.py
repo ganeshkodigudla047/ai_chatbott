@@ -50,15 +50,18 @@ def load_model(_version="v11"):
         for pattern in intent["patterns"]:
             tags.append(intent["tag"])
             patterns.append(pattern.lower())
+    model = SentenceTransformer("all-MiniLM-L6-v2")
     if os.path.exists(cache_path):
         with open(cache_path, "rb") as f:
             embeddings = pickle.load(f)
-        model = SentenceTransformer("all-MiniLM-L6-v2")
     else:
-        model = SentenceTransformer("all-MiniLM-L6-v2")
         embeddings = model.encode(patterns, convert_to_numpy=True)
-        with open(cache_path, "wb") as f:
-            pickle.dump(embeddings, f)
+        try:
+            os.makedirs("model", exist_ok=True)
+            with open(cache_path, "wb") as f:
+                pickle.dump(embeddings, f)
+        except Exception:
+            pass  # read-only filesystem on cloud — skip caching
     model.encode(["warmup"], convert_to_numpy=True)
     return intents, model, embeddings, tags
 
