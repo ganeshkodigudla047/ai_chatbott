@@ -81,41 +81,11 @@ VOCAB = build_vocab("v15")
 _tts_proc = None
 
 def speak_text(text):
-    import sys
-    if sys.platform != "win32":
-        return  # TTS only supported on Windows
-    import re, subprocess, tempfile, os
-    global _tts_proc
-    if _tts_proc is not None:
-        try: _tts_proc.kill(); _tts_proc.wait(timeout=1)
-        except Exception: pass
-        _tts_proc = None
-    pid = st.session_state.get("_tts_pid")
-    if pid:
-        try:
-            import signal; os.kill(pid, signal.SIGTERM)
-        except Exception: pass
-        st.session_state["_tts_pid"] = None
+    import re
     clean = re.sub(r'\*+|#+|`|_|\|', '', text)
     clean = re.sub(r'\-{2,}', '', clean)
     clean = re.sub(r'\s+', ' ', clean).strip()
-    if not clean:
-        return
-    tmp = tempfile.NamedTemporaryFile(mode='w', suffix='.txt', delete=False, encoding='utf-8')
-    tmp.write(clean); tmp.close()
-    script = (
-        "import pyttsx3, os;"
-        f"txt=open({repr(tmp.name)},encoding='utf-8').read();"
-        "e=pyttsx3.init();e.setProperty('rate',160);e.setProperty('volume',1.0);"
-        "[e.setProperty('voice',v.id) for v in e.getProperty('voices') if 'zira' in v.name.lower() or 'female' in v.name.lower()];"
-        f"e.say(txt);e.runAndWait();os.remove({repr(tmp.name)})"
-    )
-    _tts_proc = subprocess.Popen(
-        [sys.executable, "-c", script],
-        stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL,
-        creationflags=subprocess.CREATE_NO_WINDOW if hasattr(subprocess, 'CREATE_NO_WINDOW') else 0
-    )
-    st.session_state["_tts_pid"] = _tts_proc.pid
+    st.session_state["_tts_text"] = clean
 
 def recognize_speech():
     import sys
@@ -445,7 +415,12 @@ strong {{ font-weight:700; }}
     }}
   }}
 }})();
-</script></body></html>""".replace("{{TTS_PLACEHOLDER}}", st.session_state.get("_tts_text","").replace('"','\\"')), height=430, scrolling=False)
+</script></body></html>""".replace(
+    "{{TTS_PLACEHOLDER}}",
+    (st.session_state.get("_tts_text","") if st.session_state.get("voice_output") else "").replace('"','\\"')
+), height=430, scrolling=False)
+# Clear after injecting so it doesn't repeat on next rerun
+st.session_state["_tts_text"] = ""
 
 # ── Input row ──────────────────────────────────────────────────────────────────
 st.markdown('<div style="background:#f0f4f8;border-top:1px solid #dde3f0;padding-top:4px">', unsafe_allow_html=True)
