@@ -433,64 +433,68 @@ if st.session_state.get("_toggle_voice"):
 
 voice_label = "🔊 ON" if st.session_state.voice_output else "🔇 OFF"
 
-# Handle mic transcript from browser (passed via query param)
+# Handle mic transcript — put it in the input box
 _mic_text = st.query_params.get("mic", "")
 if _mic_text:
     st.query_params.clear()
-    process(_mic_text)
+    st.session_state["_mic_prefill"] = _mic_text
     st.rerun()
 
-with st.form("chat_form", clear_on_submit=True):
-    ci, c_send, c_voice, c_clear = st.columns([5, 1, 1, 1])
-    user_input = ci.text_input("msg", label_visibility="collapsed",
-                               placeholder="💬 Type your message...", key="user_msg_form")
-    send  = c_send.form_submit_button("Send",       use_container_width=True)
-    voice = c_voice.form_submit_button(voice_label, use_container_width=True)
-    clear = c_clear.form_submit_button("Clear",     use_container_width=True)
+# Pre-fill input with mic text if available
+_prefill = st.session_state.pop("_mic_prefill", "") if "_mic_prefill" in st.session_state else ""
 
-    if voice:
-        st.session_state["_toggle_voice"] = True; st.rerun()
-    if send and user_input.strip():
-        process(user_input.strip()); st.rerun()
-    if clear:
-        clear_chat(); st.rerun()
+# Layout: [form: input+Send+Voice+Clear] [mic component]
+col_form, col_mic = st.columns([9, 1])
 
-# Browser mic button using Web Speech Recognition API
-components.html("""
+with col_form:
+    with st.form("chat_form", clear_on_submit=True):
+        ci, c_send, c_voice, c_clear = st.columns([5, 1, 1, 1])
+        user_input = ci.text_input("msg", label_visibility="collapsed",
+                                   placeholder="💬 Type your message...",
+                                   value=_prefill,
+                                   key="user_msg_form")
+        send  = c_send.form_submit_button("Send",       use_container_width=True)
+        voice = c_voice.form_submit_button(voice_label, use_container_width=True)
+        clear = c_clear.form_submit_button("Clear",     use_container_width=True)
+
+        if voice:
+            st.session_state["_toggle_voice"] = True; st.rerun()
+        if send and user_input.strip():
+            process(user_input.strip()); st.rerun()
+        if clear:
+            clear_chat(); st.rerun()
+
+with col_mic:
+    components.html("""
 <style>
-  body { margin:0; padding:4px 0 0; background:transparent; font-family:'Segoe UI',sans-serif; }
+  body { margin:0; padding:0; background:transparent; font-family:'Segoe UI',sans-serif;
+         display:flex; align-items:center; height:100%; }
   #micBtn {
     background:#fff; border:1.5px solid #d0d7e8; border-radius:20px;
-    padding:0 18px; height:42px; font-size:13px; color:#1e2a4a;
-    cursor:pointer; display:inline-flex; align-items:center; gap:6px;
+    padding:0 14px; height:42px; font-size:13px; color:#1e2a4a;
+    cursor:pointer; white-space:nowrap;
     transition:background .15s, border-color .15s;
   }
   #micBtn:hover { background:#e8edf8; border-color:#1e2a4a; }
   #micBtn.listening { background:#fee2e2; border-color:#ef4444; color:#ef4444; }
-  #status { font-size:11px; color:#888; margin-left:8px; }
 </style>
 <button id="micBtn" onclick="startMic()">🎤 Speak</button>
-<span id="status"></span>
 <script>
 function startMic() {
   var SR = window.SpeechRecognition || window.webkitSpeechRecognition;
-  if (!SR) { document.getElementById("status").innerText = "Not supported in this browser"; return; }
+  if (!SR) { alert("Speech not supported. Use Chrome or Edge."); return; }
   var btn = document.getElementById("micBtn");
-  var st = document.getElementById("status");
   var r = new SR();
   r.lang = "en-IN";
   r.interimResults = false;
   r.maxAlternatives = 1;
   btn.classList.add("listening");
-  btn.innerText = "🔴 Listening...";
-  st.innerText = "";
+  btn.innerText = "🔴 ...";
   r.start();
   r.onresult = function(e) {
     var txt = e.results[0][0].transcript;
-    st.innerText = "Heard: " + txt;
     btn.classList.remove("listening");
     btn.innerText = "🎤 Speak";
-    // Send to Streamlit via URL query param
     var url = new URL(window.parent.location.href);
     url.searchParams.set("mic", txt);
     window.parent.location.href = url.toString();
@@ -498,14 +502,13 @@ function startMic() {
   r.onerror = function(e) {
     btn.classList.remove("listening");
     btn.innerText = "🎤 Speak";
-    st.innerText = "Error: " + e.error;
   };
   r.onend = function() {
     btn.classList.remove("listening");
-    if(btn.innerText === "🔴 Listening...") btn.innerText = "🎤 Speak";
+    if(btn.innerText === "🔴 ...") btn.innerText = "🎤 Speak";
   };
 }
 </script>
-""", height=55, scrolling=False)
+""", height=52, scrolling=False)
 
 st.markdown('</div>', unsafe_allow_html=True)
