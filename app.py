@@ -404,23 +404,25 @@ strong {{ font-weight:700; }}
   c.addEventListener("scroll",function(){{us=(c.scrollHeight-c.scrollTop-c.clientHeight)>80;}});
   new MutationObserver(function(){{if(!us)s();}}).observe(c,{{childList:true,subtree:true}});
 }})();
+</script></body></html>""", height=430, scrolling=False)
+
+# Browser TTS via separate component (avoids f-string escaping issues)
+_tts_out = (st.session_state.get("_tts_text","") if st.session_state.get("voice_output") else "")
+st.session_state["_tts_text"] = ""  # clear after use
+if _tts_out:
+    import json as _json
+    _tts_safe = _json.dumps(_tts_out)  # properly escaped JS string
+    components.html(f"""<script>
 (function(){{
-  var txt = "{{TTS_PLACEHOLDER}}";
+  var txt = {_tts_safe};
   if(txt && window.speechSynthesis){{
     window.speechSynthesis.cancel();
-    if(txt.length > 0){{
-      var u = new SpeechSynthesisUtterance(txt);
-      u.rate = 1.0; u.pitch = 1.0; u.volume = 1.0;
-      window.speechSynthesis.speak(u);
-    }}
+    var u = new SpeechSynthesisUtterance(txt);
+    u.rate = 1.0; u.pitch = 1.0; u.volume = 1.0;
+    window.speechSynthesis.speak(u);
   }}
 }})();
-</script></body></html>""".replace(
-    "{{TTS_PLACEHOLDER}}",
-    (st.session_state.get("_tts_text","") if st.session_state.get("voice_output") else "").replace('"','\\"')
-), height=430, scrolling=False)
-# Clear after injecting so it doesn't repeat on next rerun
-st.session_state["_tts_text"] = ""
+</script>""", height=0, scrolling=False)
 
 # ── Input row ──────────────────────────────────────────────────────────────────
 st.markdown('<div style="background:#f0f4f8;border-top:1px solid #dde3f0;padding-top:4px">', unsafe_allow_html=True)
@@ -431,13 +433,19 @@ if st.session_state.get("_toggle_voice"):
 
 voice_label = "🔊 ON" if st.session_state.voice_output else "🔇 OFF"
 
+# Handle mic transcript from browser (passed via query param)
+_mic_text = st.query_params.get("mic", "")
+if _mic_text:
+    st.query_params.clear()
+    process(_mic_text)
+    st.rerun()
+
 with st.form("chat_form", clear_on_submit=True):
-    ci, c_send, c_voice, c_mic, c_clear = st.columns([5, 1, 1, 1, 1])
+    ci, c_send, c_voice, c_clear = st.columns([5, 1, 1, 1])
     user_input = ci.text_input("msg", label_visibility="collapsed",
                                placeholder="💬 Type your message...", key="user_msg_form")
     send  = c_send.form_submit_button("Send",       use_container_width=True)
     voice = c_voice.form_submit_button(voice_label, use_container_width=True)
-    mic   = c_mic.form_submit_button("Speak",       use_container_width=True)
     clear = c_clear.form_submit_button("Clear",     use_container_width=True)
 
     if voice:
@@ -446,11 +454,58 @@ with st.form("chat_form", clear_on_submit=True):
         process(user_input.strip()); st.rerun()
     if clear:
         clear_chat(); st.rerun()
-    if mic:
-        with st.spinner("Listening..."):
-            spoken = recognize_speech()
-        if spoken: process(spoken); st.rerun()
-        else: st.warning("Couldn't catch that. Try again.")
 
+# Browser mic button using Web Speech Recognition API
+components.html("""
+<style>
+  body { margin:0; padding:4px 0 0; background:transparent; font-family:'Segoe UI',sans-serif; }
+  #micBtn {
+    background:#fff; border:1.5px solid #d0d7e8; border-radius:20px;
+    padding:0 18px; height:42px; font-size:13px; color:#1e2a4a;
+    cursor:pointer; display:inline-flex; align-items:center; gap:6px;
+    transition:background .15s, border-color .15s;
+  }
+  #micBtn:hover { background:#e8edf8; border-color:#1e2a4a; }
+  #micBtn.listening { background:#fee2e2; border-color:#ef4444; color:#ef4444; }
+  #status { font-size:11px; color:#888; margin-left:8px; }
+</style>
+<button id="micBtn" onclick="startMic()">🎤 Speak</button>
+<span id="status"></span>
+<script>
+function startMic() {
+  var SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if (!SR) { document.getElementById("status").innerText = "Not supported in this browser"; return; }
+  var btn = document.getElementById("micBtn");
+  var st = document.getElementById("status");
+  var r = new SR();
+  r.lang = "en-IN";
+  r.interimResults = false;
+  r.maxAlternatives = 1;
+  btn.classList.add("listening");
+  btn.innerText = "🔴 Listening...";
+  st.innerText = "";
+  r.start();
+  r.onresult = function(e) {
+    var txt = e.results[0][0].transcript;
+    st.innerText = "Heard: " + txt;
+    btn.classList.remove("listening");
+    btn.innerText = "🎤 Speak";
+    // Send to Streamlit via URL query param
+    var url = new URL(window.parent.location.href);
+    url.searchParams.set("mic", txt);
+    window.parent.location.href = url.toString();
+  };
+  r.onerror = function(e) {
+    btn.classList.remove("listening");
+    btn.innerText = "🎤 Speak";
+    st.innerText = "Error: " + e.error;
+  };
+  r.onend = function() {
+    btn.classList.remove("listening");
+    if(btn.innerText === "🔴 Listening...") btn.innerText = "🎤 Speak";
+  };
+}
+</script>
+""", height=55, scrolling=False)
 
 st.markdown('</div>', unsafe_allow_html=True)
