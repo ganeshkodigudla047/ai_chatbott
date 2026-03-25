@@ -17,8 +17,6 @@ st.markdown("""
 <style>
 #MainMenu, footer, header { visibility: hidden; }
 [data-testid="stAppViewContainer"] { background: #f0f4f8 !important; }
-[data-testid="stSidebar"] { background: #1e2a4a !important; }
-[data-testid="stSidebar"] * { color: #fff !important; }
 [data-testid="stMain"] { padding-top: 0 !important; }
 [data-testid="block-container"] {
     padding-top: 0 !important; padding-bottom: 8px !important; max-width: 100% !important;
@@ -355,15 +353,7 @@ def process(user_text):
     st.session_state.messages.append({"role":"bot","text":response})
     if st.session_state.voice_output:
         speak_text(response)
-    try:
-        with open("data/query_counts.json","r") as f: data = json.load(f)
-        recent = data.get("recent",[])
-        key = user_text.strip().lower()
-        if key in recent: recent.remove(key)
-        recent.insert(0, key)
-        data["recent"] = recent[:10]
-        with open("data/query_counts.json","w") as f: json.dump(data, f)
-    except Exception: pass
+
 
 def clear_chat():
     global _tts_proc
@@ -380,18 +370,6 @@ def clear_chat():
     st.session_state.messages = [{"role":"bot","text":"👋 Hello! I'm the Avanthi College Assistant. How can I help you today?"}]
     st.session_state.last_dept = None
     st.session_state.last_topic = "course_info"
-
-# ── Sidebar ────────────────────────────────────────────────────────────────────
-with st.sidebar:
-    st.markdown("## 🎓 Avanthi")
-    st.divider()
-
-# ── Load recent queries ────────────────────────────────────────────────────────
-try:
-    with open("data/query_counts.json","r") as f: _d = json.load(f)
-    recent_queries = _d.get("recent", [])
-except Exception:
-    recent_queries = []
 
 # ── Build chat HTML ────────────────────────────────────────────────────────────
 chat_html = ""
@@ -488,29 +466,5 @@ with st.form("chat_form", clear_on_submit=True):
         if spoken: process(spoken); st.rerun()
         else: st.warning("Couldn't catch that. Try again.")
 
-# ── Recently asked ─────────────────────────────────────────────────────────────
-if recent_queries:
-    st.markdown("""<style>
-    .rq-wrap { display:flex; flex-wrap:wrap; gap:5px; margin:4px 0 2px; align-items:center; }
-    .rq-label { font-size:10px; color:#888; font-weight:700; letter-spacing:.5px; margin-bottom:3px; }
-    .rq-wrap > div { flex: 0 0 auto !important; width: auto !important; }
-    .rq-wrap > div .stButton > button {
-        white-space: nowrap !important; height: 26px !important; line-height: 26px !important;
-        padding: 0 10px !important; font-size: 11px !important; border-radius: 20px !important;
-        background: #fff !important; border: 1.5px solid #d0d7e8 !important;
-        color: #1e2a4a !important; min-width: 0 !important;
-    }
-    .rq-wrap > div .stButton > button:hover {
-        background: #e8edf8 !important; border-color: #1e2a4a !important;
-    }
-    </style>""", unsafe_allow_html=True)
-    st.markdown('<div class="rq-label">🕐 RECENTLY ASKED</div>', unsafe_allow_html=True)
-    st.markdown('<div class="rq-wrap">', unsafe_allow_html=True)
-    cols = st.columns(len(recent_queries))
-    for i, q in enumerate(recent_queries):
-        label = (q.title()[:16] + "…") if len(q) > 16 else q.title()
-        with cols[i]:
-            if st.button(label, key=f"faq_{i}"):
-                process(q); st.rerun()
-    st.markdown('</div>', unsafe_allow_html=True)
+
 st.markdown('</div>', unsafe_allow_html=True)
