@@ -490,58 +490,27 @@ with st.form("chat_form", clear_on_submit=True):
 
 # ── Recently asked ─────────────────────────────────────────────────────────────
 if recent_queries:
-    # Build pill HTML — rendered inside components.html so CSS is fully controlled
-    pills = ""
-    for i, q in enumerate(recent_queries):
-        label = (q.title()[:18] + "…") if len(q) > 18 else q.title()
-        safe_label = label.replace('"', '&quot;').replace("'", "&#39;")
-        safe_q = q.replace('"', '&quot;').replace("'", "&#39;")
-        pills += f'<button data-idx="{i}" title="{safe_q}">{safe_label}</button>'
-
-    components.html(f"""
-<style>
-  body {{ margin:0; padding:3px 0 2px; background:transparent;
-          font-family:'Segoe UI',sans-serif; }}
-  .lbl {{ font-size:10px; color:#888; font-weight:700; letter-spacing:.5px;
-           margin-bottom:4px; display:block; }}
-  .row {{ display:flex; flex-wrap:wrap; gap:5px; }}
-  button {{
-    background:#fff; border:1.5px solid #d0d7e8; border-radius:20px;
-    padding:3px 11px; font-size:12px; color:#1e2a4a; cursor:pointer;
-    white-space:nowrap; font-family:'Segoe UI',sans-serif;
-    transition:background .15s, border-color .15s;
-  }}
-  button:hover {{ background:#e8edf8; border-color:#1e2a4a; }}
-</style>
-<span class="lbl">🕐 RECENTLY ASKED</span>
-<div class="row">{pills}</div>
-<script>
-  document.querySelectorAll("button[data-idx]").forEach(function(btn) {{
-    btn.addEventListener("click", function() {{
-      window.parent.postMessage({{
-        type: "streamlit:setComponentValue",
-        value: btn.getAttribute("title")
-      }}, "*");
-    }});
-  }});
-</script>
-""", height=62, scrolling=False)
-
-    # Hidden Streamlit buttons — one per query, triggered by component value
-    _cv = st.session_state.get("_pill_click")
-    if _cv:
-        st.session_state["_pill_click"] = None
-        process(_cv); st.rerun()
-
-    # Fallback visible buttons (hidden via CSS, kept for Streamlit click handling)
     st.markdown("""<style>
-    div[data-testid="stHorizontalBlock"].pill-row { display:none !important; }
+    .rq-wrap { display:flex; flex-wrap:wrap; gap:5px; margin:4px 0 2px; align-items:center; }
+    .rq-label { font-size:10px; color:#888; font-weight:700; letter-spacing:.5px; margin-bottom:3px; }
+    .rq-wrap > div { flex: 0 0 auto !important; width: auto !important; }
+    .rq-wrap > div .stButton > button {
+        white-space: nowrap !important; height: 26px !important; line-height: 26px !important;
+        padding: 0 10px !important; font-size: 11px !important; border-radius: 20px !important;
+        background: #fff !important; border: 1.5px solid #d0d7e8 !important;
+        color: #1e2a4a !important; min-width: 0 !important;
+    }
+    .rq-wrap > div .stButton > button:hover {
+        background: #e8edf8 !important; border-color: #1e2a4a !important;
+    }
     </style>""", unsafe_allow_html=True)
-    with st.container():
-        cols = st.columns(len(recent_queries))
-        for i, q in enumerate(recent_queries):
-            label = (q.title()[:18] + "…") if len(q) > 18 else q.title()
-            if cols[i].button(label, key=f"faq_{i}"):
+    st.markdown('<div class="rq-label">🕐 RECENTLY ASKED</div>', unsafe_allow_html=True)
+    st.markdown('<div class="rq-wrap">', unsafe_allow_html=True)
+    cols = st.columns(len(recent_queries))
+    for i, q in enumerate(recent_queries):
+        label = (q.title()[:16] + "…") if len(q) > 16 else q.title()
+        with cols[i]:
+            if st.button(label, key=f"faq_{i}"):
                 process(q); st.rerun()
-
+    st.markdown('</div>', unsafe_allow_html=True)
 st.markdown('</div>', unsafe_allow_html=True)
