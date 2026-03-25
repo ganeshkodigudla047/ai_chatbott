@@ -433,89 +433,76 @@ if st.session_state.get("_toggle_voice"):
 
 _voice_on = st.session_state.get("voice_output", False)
 _voice_label = "🔊 ON" if _voice_on else "🔇 OFF"
-_voice_color = "#dcfce7" if _voice_on else "#fff"
 _prefill = st.session_state.pop("_mic_prefill", "") if "_mic_prefill" in st.session_state else ""
 
-# Streamlit form — hidden visually, submitted by JS
+# Streamlit form handles all actions
 with st.form("chat_form", clear_on_submit=True):
-    ci, c_send, c_voice, c_clear = st.columns([5,1,1,1])
+    ci, c_send, c_voice, c_clear = st.columns([5, 1, 1, 1])
     user_input = ci.text_input("msg", label_visibility="collapsed",
-                               placeholder="msg", value=_prefill, key="user_msg_form")
-    send  = c_send.form_submit_button("Send")
-    voice = c_voice.form_submit_button(_voice_label)
-    clear = c_clear.form_submit_button("Clear")
+                               placeholder="💬 Type your message...",
+                               value=_prefill, key="user_msg_form")
+    send  = c_send.form_submit_button("Send",       use_container_width=True)
+    voice = c_voice.form_submit_button(_voice_label, use_container_width=True)
+    clear = c_clear.form_submit_button("Clear",     use_container_width=True)
     if voice: st.session_state["_toggle_voice"] = True; st.rerun()
     if send and user_input.strip(): process(user_input.strip()); st.rerun()
     if clear: clear_chat(); st.rerun()
 
-# Hide the Streamlit form and overlay our custom HTML input row
-st.markdown(f"""<style>
-/* hide native form */
-div[data-testid="stForm"] {{ display:none !important; }}
+# Mic button in components.html — fills Streamlit input via postMessage listener
+# The listener is injected via st.markdown (same React page, not sandboxed)
+st.markdown("""<script>
+window.addEventListener("message", function(e) {
+    if(e.data && e.data.type === "mic_result") {
+        var inp = document.querySelector('input[data-testid="stTextInput"]');
+        if(!inp) inp = document.querySelector('.stTextInput input');
+        if(inp) {
+            var setter = Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype,'value').set;
+            setter.call(inp, e.data.text);
+            inp.dispatchEvent(new Event('input', {bubbles:true}));
+            inp.focus();
+        }
+    }
+});
+</script>""", unsafe_allow_html=True)
+
+components.html(f"""
+<style>
+  body {{ margin:0; padding:2px 0 0; background:transparent; }}
+  #micBtn {{
+    background:none; border:none; cursor:pointer; font-size:20px;
+    padding:2px 6px; opacity:0.5; transition:opacity .15s; vertical-align:middle;
+  }}
+  #micBtn:hover {{ opacity:1; }}
+  #micBtn.on {{ opacity:1; animation:pulse .7s infinite; }}
+  @keyframes pulse {{ 0%,100%{{opacity:1}} 50%{{opacity:.2}} }}
+  #hint {{ font-size:11px; color:#888; margin-left:4px; }}
 </style>
-<div style="display:flex;gap:6px;align-items:center;padding:2px 0 4px;">
-  <div style="flex:1;position:relative;display:flex;align-items:center;
-              background:#f8faff;border:2px solid #d0d7e8;border-radius:24px;
-              padding:0 40px 0 14px;height:42px;" id="inputWrap">
-    <input id="msgInput" type="text" placeholder="💬 Type your message..."
-           value="{_prefill}"
-           style="flex:1;border:none;outline:none;background:transparent;
-                  font-size:14px;color:#1a1a2e;"
-           onkeydown="if(event.key==='Enter')sendMsg()"/>
-    <button onclick="startMic()" title="Speak"
-            id="micBtn"
-            style="position:absolute;right:10px;background:none;border:none;
-                   cursor:pointer;font-size:17px;padding:0;opacity:0.5;">🎤</button>
-  </div>
-  <button onclick="sendMsg()"
-          style="background:#fff;border:1.5px solid #d0d7e8;border-radius:20px;
-                 padding:0 16px;height:42px;font-size:13px;color:#1e2a4a;cursor:pointer;">Send</button>
-  <button onclick="toggleVoice()"
-          style="background:{_voice_color};border:1.5px solid #d0d7e8;border-radius:20px;
-                 padding:0 16px;height:42px;font-size:13px;color:#1e2a4a;cursor:pointer;">{_voice_label}</button>
-  <button onclick="clearChat()"
-          style="background:#fff;border:1.5px solid #d0d7e8;border-radius:20px;
-                 padding:0 16px;height:42px;font-size:13px;color:#1e2a4a;cursor:pointer;">Clear</button>
-</div>
+<button id="micBtn" onclick="startMic()" title="Click to speak">🎤</button>
+<span id="hint">click to speak</span>
 <script>
-function fillAndSubmit(txt, btnId) {{
-  // Find the hidden Streamlit input and submit button, fill and click
-  var inputs = window.parent.document.querySelectorAll('input[data-testid="stTextInput"]');
-  var btns = window.parent.document.querySelectorAll('button[kind="formSubmit"], button[data-testid="baseButton-secondaryFormSubmit"]');
-  if(inputs.length > 0) {{
-    var nativeInput = inputs[0];
-    var nativeSetter = Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype, 'value').set;
-    nativeSetter.call(nativeInput, txt);
-    nativeInput.dispatchEvent(new Event('input', {{bubbles:true}}));
-  }}
-  // Click the right submit button
-  var allBtns = window.parent.document.querySelectorAll('button');
-  for(var i=0;i<allBtns.length;i++) {{
-    if(allBtns[i].innerText.trim() === btnId) {{ allBtns[i].click(); break; }}
-  }}
-}}
-function sendMsg() {{
-  var txt = document.getElementById("msgInput").value.trim();
-  if(txt) fillAndSubmit(txt, "Send");
-}}
-function toggleVoice() {{ fillAndSubmit("", "{_voice_label}"); }}
-function clearChat() {{ fillAndSubmit("", "Clear"); }}
 function startMic() {{
   var SR = window.SpeechRecognition || window.webkitSpeechRecognition;
-  if(!SR){{ alert("Use Chrome or Edge for mic."); return; }}
+  if(!SR) {{ document.getElementById("hint").innerText="Not supported — use Chrome/Edge"; return; }}
   var btn = document.getElementById("micBtn");
-  var inp = document.getElementById("msgInput");
+  var hint = document.getElementById("hint");
   var r = new SR();
   r.lang = "en-IN"; r.interimResults = false; r.maxAlternatives = 1;
-  btn.style.opacity="1"; btn.innerText="🔴";
+  btn.classList.add("on"); btn.innerText = "🔴"; hint.innerText = "listening...";
   r.start();
   r.onresult = function(e) {{
-    inp.value = e.results[0][0].transcript;
-    btn.style.opacity="0.5"; btn.innerText="🎤";
+    var txt = e.results[0][0].transcript;
+    btn.classList.remove("on"); btn.innerText = "🎤"; hint.innerText = "heard: " + txt;
+    window.parent.postMessage({{type:"mic_result", text:txt}}, "*");
   }};
-  r.onerror = function() {{ btn.style.opacity="0.5"; btn.innerText="🎤"; }};
-  r.onend = function() {{ if(btn.innerText==="🔴"){{ btn.style.opacity="0.5"; btn.innerText="🎤"; }} }};
+  r.onerror = function(ev) {{
+    btn.classList.remove("on"); btn.innerText = "🎤";
+    hint.innerText = "error: " + ev.error;
+  }};
+  r.onend = function() {{
+    btn.classList.remove("on");
+    if(btn.innerText==="🔴") {{ btn.innerText="🎤"; hint.innerText="click to speak"; }}
+  }};
 }}
-document.getElementById("msgInput").focus();
-</script>""", unsafe_allow_html=True)
+</script>
+""", height=38, scrolling=False)
 st.markdown('</div>', unsafe_allow_html=True)
