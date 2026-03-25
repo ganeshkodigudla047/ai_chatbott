@@ -1,0 +1,885 @@
+{
+  "intents": [
+    {
+      "tag": "personal_question",
+      "patterns": [
+        "what is my name", "what's my name", "who am i", "do you know my name",
+        "tell me my name", "what do you call me", "my name", "do you know me",
+        "what is your name", "what's your name", "who are you", "your name",
+        "are you a bot", "are you human", "are you ai", "what are you",
+        "how old are you", "what is your age", "where are you from",
+        "do you have feelings", "are you real"
+      ],
+      "responses": [
+        "I'm the Avanthi College Assistant 🎓 — I don't have access to personal details like your name. But I can help you with college info, fees, faculty, labs, bus routes, and more! What would you like to know?",
+        "Ha, I wish I knew! I'm just a college chatbot — I don't have access to personal info. But ask me anything about Avanthi College and I've got you covered 😄",
+        "I don't know your name — but I'd love to help you with something college-related! Try asking about fees, faculty, events, or bus routes 🙂"
+      ]
+    },
+    {
+      "tag": "college_address",
+      "patterns": [
+        "college address", "address of college", "where is avanthi college",
+        "college location", "how to reach college", "college pincode",
+        "avanthi college address", "college map", "college direction",
+        "where is the college located", "college place", "college area",
+        "help to reach college", "how do i reach college", "directions to college"
+      ],
+      "responses": ["Avanthi Institute of Engineering & Technology\nNarsipatnam, Anakapalli District,\nAndhra Pradesh - 531116.\n📞 Contact: +91-XXXXXXXXXX\n📧 Email: info@avanthi.edu.in"]
+    },
+    {
+      "tag": "college_info",
+      "patterns": [
+        "college name", "what is the college name", "name of college",
+        "which college is this", "about this college", "about avanthi",
+        "tell me about the college", "college details", "college info",
+        "what college is this", "avanthi college", "college full name",
+        "when was college established", "when was avanthi established",
+        "when was the college founded", "college established year",
+        "college founded year", "year of establishment", "establishment year",
+        "when did avanthi start", "history of college", "college history",
+        "who established the college", "who founded avanthi"
+      ],
+      "responses": ["Avanthi Institute of Engineering & Technology was established in **1991** by Sri. Muttamsetti Srinivasa Rao (Avanthi Srinivas), under the Avanthi Educational Society. It is located at Narsipatnam, Anakapalli District, Andhra Pradesh - 531116. The college offers B.Tech, M.Tech, and Diploma programs across multiple engineering branches."]
+    },
+    {
+      "tag": "nothing",
+      "patterns": [
+        "nothing", "never mind", "nvm", "no thanks", "not now",
+        "forget it", "leave it", "its ok", "its okay", "no need",
+        "nope", "nah", "no", "not really"
+      ],
+      "responses": [
+        "No worries at all! I'm here whenever you need me 😊",
+        "Sure, no problem! Just ask whenever you're ready.",
+        "Alright! Come back anytime — I'm always here to help."
+      ]
+    },
+    {
+      "tag": "capabilities",
+      "patterns": [
+        "what can you do", "what can u do", "what do you know", "how can you help",
+        "what are you capable of", "what topics do you cover", "help me",
+        "what can i ask", "what questions can i ask", "what do you help with",
+        "your capabilities", "features", "what do you do"
+      ],
+      "responses": ["I can help you with:\n🏫 College info & address\n📋 Admissions & courses\n💰 Fees & payment\n👨‍🏫 Faculty & HOD details\n🧪 Lab details (CSE, ECE, EEE, Mech, Chemistry, Physics)\n🚌 Bus routes & fees\n📅 Exam schedule & results\n🏠 Hostel & gym\n📚 Library\n🎯 CRT training\n🎉 Events\n🏆 Placements\nJust type your question and I'll answer!"]
+    },
+    {
+      "tag": "incomplete",
+      "patterns": [
+        "i want", "i need", "tell me about", "what about",
+        "i was", "i am looking for", "i want to know about",
+        "i need help with", "i was asking about",
+        "list them", "list it", "i want in list", "show list",
+        "show them", "in list", "list format", "show in list"
+      ],
+      "responses": [
+        "Could you be a bit more specific? For example, try asking 'CSE faculty list', 'bus routes', or 'fee details' — I'll have the answer ready! 😊",
+        "I need a little more context! Something like 'list CSE faculty' or 'show bus routes' would work great.",
+        "What would you like listed? Try 'CSE faculty', 'lab details', or 'courses offered' and I'll pull it up for you!"
+      ]
+    },
+    {
+      "tag": "greeting",
+      "patterns": ["Hi", "Hello", "Hey", "Good morning", "Good afternoon", "What's up", "Howdy"],
+      "responses": [
+        "Hello! Welcome to Avanthi College Assistant 🎓 What can I help you with today?",
+        "Hey! Good to see you. Ask me anything about the college — fees, faculty, labs, events, whatever you need! 😊",
+        "Hi there! I'm here to help. What would you like to know about Avanthi College?"
+      ]
+    },
+    {
+      "tag": "goodbye",
+      "patterns": [
+        "bye", "goodbye", "see you", "see ya", "take care", "exit", "quit",
+        "good night", "gn", "cya", "later", "talk later", "bye bye", "ok bye", "ok goodbye"
+      ],
+      "responses": [
+        "Goodbye! Hope I was helpful. Come back anytime you have questions 👋",
+        "See you! Best of luck with your studies 🎓",
+        "Take care! Feel free to come back whenever you need help 😊"
+      ]
+    },
+    {
+      "tag": "thanks",
+      "patterns": ["Thanks", "Thank you", "That's helpful", "Thanks a lot", "Appreciate it"],
+      "responses": [
+        "You're welcome! Happy to help 😊",
+        "Anytime! That's what I'm here for 🙂",
+        "Glad I could help! Let me know if there's anything else.",
+        "No problem at all! Feel free to ask more questions."
+      ]
+    },
+    {
+      "tag": "admission",
+      "patterns": ["How to apply", "Admission process", "How do I get admission", "Admission requirements", "Eligibility for admission", "When does admission start", "Admission deadline"],
+      "responses": ["Admissions open every year in June. You need to fill out the online application form on our website, submit your 12th grade marksheet, and clear the entrance exam. The cutoff is typically 60% aggregate.", "To apply, visit our official website, complete the application form, and upload required documents including your academic transcripts and ID proof."]
+    },
+    {
+      "tag": "courses",
+      "patterns": ["What courses are available", "List of programs", "Which departments are there", "What can I study", "Available degrees", "Undergraduate programs", "Postgraduate programs"],
+      "responses": ["We offer undergraduate programs in Engineering (CS, IT, ECE, Mechanical, Civil), Science (Physics, Chemistry, Math), Commerce, and Arts. Postgraduate programs include MBA, MCA, M.Tech, and M.Sc.", "Our college offers B.Tech, B.Sc, B.Com, BA, MBA, MCA, M.Tech, and Ph.D programs across various disciplines."]
+    },
+    {
+      "tag": "fees",
+      "patterns": ["What is the fee structure", "How much is the tuition", "Fee details", "Cost of studying", "Annual fees", "Semester fees", "Scholarship available"],
+      "responses": ["**Fee Structure:**\n\n| Program | Annual Fee |\n|---|---|\n| Engineering (B.Tech) | ₹1,00,000 |\n| Science (B.Sc) | ₹60,000 |\n| Commerce / Arts | ₹50,000 |\n\nFee range: ₹49,500 – ₹1,20,000 depending on program. Scholarships available for meritorious students. Pay via the **Parent Portal App**. No credentials? Contact your class incharge or HOD."]
+    },
+    {
+      "tag": "fee_payment",
+      "patterns": [
+        "where to pay fees", "how to pay fees", "fee payment", "pay fees",
+        "how can i pay fees", "fee payment process", "online fee payment",
+        "where do i pay", "fee portal", "parent portal", "pay tuition",
+        "fee payment app", "how to pay tuition", "fee submission",
+        "how to pay the fees", "how do i pay fees", "how do we pay fees",
+        "payment of fees", "fees payment", "pay my fees", "fees kaise pay kare",
+        "how to make fee payment", "fee pay kaise kare", "how to submit fees",
+        "where can i pay my fees", "fee payment method", "fee payment portal"
+      ],
+      "responses": [
+        "You can pay your fees through the **Parent Portal App** — just log in with your credentials and complete the payment online. Easy and quick! 💳\n\nIf you don't have your login credentials, just contact your class incharge or HOD and they'll help you get access.",
+        "Fee payment is done through the **Parent Portal App**. Log in, go to the payments section, and you're good to go! If you're having trouble with credentials, reach out to your class incharge or HOD — they'll sort it out."
+      ]
+    },
+    {
+      "tag": "no_credentials",
+      "patterns": [
+        "i dont have credentials", "no credentials", "dont have login",
+        "forgot credentials", "no login details", "credentials not available",
+        "what if i dont have credentials", "what should i do if i dont have credentials",
+        "i don't have credentials", "how to get credentials", "get login credentials",
+        "no username password", "forgot password portal", "lost credentials",
+        "what to do without credentials", "credentials problem", "login problem portal"
+      ],
+      "responses": ["If you don't have your Parent Portal credentials, please contact or meet your class incharge or HOD directly. They will help you get your login details so you can access the portal and pay your fees."]
+    },
+    {
+      "tag": "exams",
+      "patterns": ["When are exams", "Exam schedule", "Exam timetable", "When do exams start", "Semester exam dates", "Internal assessment dates"],
+      "responses": ["Semester exams are held in November-December (odd semester) and April-May (even semester). Internal assessments are conducted monthly. Check the college website or notice board for exact dates.", "Exam schedules are published on the college portal 30 days before exams. Internal exams happen every month and carry 30% weightage."]
+    },
+    {
+      "tag": "results",
+      "patterns": ["How to check results", "When will results be out", "Result declaration", "Where to see marks", "Grade card", "Marksheet"],
+      "responses": ["Results are published on the college student portal within 30 days of exam completion. Log in with your student ID to view your grades and download your marksheet.", "You can check your results on the official college portal under the 'Student Results' section. Results are typically declared within 4 weeks after exams."]
+    },
+    {
+      "tag": "hostel",
+      "patterns": ["Is hostel available", "Hostel facilities", "Accommodation", "Can I stay on campus", "Hostel fees", "Boys hostel", "Girls hostel"],
+      "responses": ["Yes, we have separate hostels for boys and girls with 24/7 security, Wi-Fi, mess facility, and laundry services. Hostel fees are ₹80,000/year including meals. Apply during admission.", "On-campus accommodation is available. The hostel has AC and non-AC rooms. Facilities include gym, common room, and high-speed internet."]
+    },
+    {
+      "tag": "library",
+      "patterns": ["Library timings", "Library facilities", "Books available", "Digital library", "Library membership", "Can I borrow books"],
+      "responses": ["The college library is open from 8 AM to 8 PM on weekdays and 9 AM to 5 PM on weekends. It has over 50,000 books, e-journals, and digital resources. Students can borrow up to 3 books for 14 days.", "Our library offers physical books, online journals (IEEE, Springer), and a reading room. Library cards are issued during orientation week."]
+    },
+    {
+      "tag": "placement",
+      "patterns": ["Placement record", "Campus placements", "Which companies visit", "Average salary", "Placement cell", "Job opportunities", "Internship"],
+      "responses": ["**Placement Highlights:**\n\n- Placement rate: 85%+\n- Average package: ₹5.5 LPA\n- Highest package: ₹24 LPA\n\n**Top Recruiters:**\n- TCS, Infosys, Wipro\n- Accenture, Amazon\n- 150+ companies visit annually\n\nPlacement season: October – February. The placement cell also assists with internships, resume building, and mock interviews."]
+    },
+    {
+      "tag": "sports",
+      "patterns": ["Sports facilities", "Playground", "Gym", "Sports events", "Annual sports day", "Cricket ground", "Basketball court"],
+      "responses": ["We have excellent sports facilities including a cricket ground, football field, basketball and volleyball courts, a fully equipped gym, and an indoor badminton court. Annual sports day is held in January.", "Sports facilities are available for all students. We participate in inter-college tournaments. The college has produced state-level athletes in cricket, athletics, and chess."]
+    },
+    {
+      "tag": "contact",
+      "patterns": ["Contact information", "Phone number", "Email address", "College address", "How to reach", "Office hours", "Principal contact"],
+      "responses": ["You can reach us at: Phone: +91-XXXXXXXXXX, Email: info@college.edu, Address: 123 College Road, City - 000000. Office hours are 9 AM to 5 PM, Monday to Saturday.", "For queries, contact the admin office at admin@college.edu or call +91-XXXXXXXXXX. The principal's office can be reached at principal@college.edu."]
+    },
+    {
+      "tag": "timing",
+      "patterns": [
+        "college timings", "when does college start", "class schedule",
+        "college hours", "what time does college open", "college open time",
+        "college close time", "what time classes start", "college timing"
+      ],
+      "responses": ["College hours are 8:30 AM to 4:30 PM, Monday to Saturday. Classes begin at 9:00 AM. The college is closed on Sundays and public holidays.", "Regular classes run from 9 AM to 4 PM. The college office opens at 8:30 AM. Saturday has classes till 1 PM."]
+    },
+    {
+      "tag": "clubs",
+      "patterns": ["Student clubs", "Extracurricular activities", "Cultural events", "Technical clubs", "NSS", "NCC", "Fest"],
+      "responses": ["We have 20+ student clubs including Coding Club, Robotics Club, Drama Club, Music Club, NSS, NCC, and Literary Club. Annual cultural fest 'Utsav' is held in February with competitions and performances.", "Student activities include technical fests, cultural programs, hackathons, and community service. Joining clubs helps build skills and network beyond academics."]
+    },
+    {
+      "tag": "transport",
+      "patterns": ["College transport", "How to reach college by bus", "Transport office"],
+      "responses": ["College buses operate on 15+ routes covering major areas of the city. Transport fee varies by distance. Bus passes are issued at the start of each semester. Contact the transport office for route details."]
+    },
+    {
+      "tag": "cse_faculty",
+      "patterns": [
+        "CSE faculty", "who teaches in CSE", "CSE department head", "CSE professors", "Computer Science teachers",
+        "who is the hod for cse", "who is cse hod", "cse hod", "hod of cse",
+        "cse head of department", "cse department head", "cse incharge",
+        "who is hod cse", "cse hod name", "computer science hod",
+        "cse faculty list", "list cse faculty", "cse staff", "cse staff list",
+        "i want cse faculty", "show cse faculty", "cse teachers list",
+        "go for the cse", "cse incharge list", "cse department faculty"
+      ],
+      "responses": ["**CSE Department Faculty:**\n\n| Name | Subject / Role |\n|---|---|\n| Mr. U Nanaji | HOD |\n| Mr. Chiranjeevi | CD |\n| Mr. Vara Prasad | Flat |\n| Mr. DhanaLakshmi | Computer Networks, CNS |\n| Mr. Sagar Kumar | C, Python, C++ |"]
+    },
+    {
+      "tag": "cse_flat_faculty",
+      "patterns": [
+        "cse flat faculty", "who teaches flat in cse", "flat faculty cse",
+        "who is flat faculty", "flat subject faculty", "flat teacher cse",
+        "who teaches flat", "flat incharge cse", "vara prasad",
+        "who is vara prasad", "mr vara prasad", "flat cse teacher",
+        "cse flat", "flat lecturer cse", "flat subject teacher"
+      ],
+      "responses": ["**FLAT Faculty (CSE):**\n\n| Name | Subject |\n|---|---|\n| Mr. Vara Prasad | FLAT (Foundations of Logic and Automata Theory) |\n\nFor more details, contact the CSE department office."]
+    },
+    {
+      "tag": "cse_cd_faculty",
+      "patterns": [
+        "who teaches cd", "cd faculty cse", "cse cd faculty", "cd teacher",
+        "compiler design faculty", "who teaches compiler design", "cd subject teacher",
+        "chiranjeevi", "mr chiranjeevi", "who is chiranjeevi", "cd incharge cse"
+      ],
+      "responses": ["**CD Faculty (CSE):**\n\n| Name | Subject |\n|---|---|\n| Mr. Chiranjeevi | CD (Compiler Design) |"]
+    },
+    {
+      "tag": "cse_networks_faculty",
+      "patterns": [
+        "who teaches computer networks", "cse networks faculty", "cns faculty cse",
+        "computer networks teacher", "who teaches cns", "dhanasalakshmi",
+        "dhanalakshmi", "mr dhanalakshmi", "who is dhanalakshmi",
+        "networks faculty cse", "cns teacher cse", "computer networks incharge"
+      ],
+      "responses": ["**Computer Networks / CNS Faculty (CSE):**\n\n| Name | Subject |\n|---|---|\n| Mr. DhanaLakshmi | Computer Networks, CNS |"]
+    },
+    {
+      "tag": "cse_programming_faculty",
+      "patterns": [
+        "who teaches c language", "who teaches python", "who teaches c++",
+        "python faculty cse", "c language teacher cse", "sagar kumar",
+        "mr sagar kumar", "who is sagar kumar", "programming faculty cse",
+        "c python faculty", "who teaches programming in cse", "c++ teacher cse"
+      ],
+      "responses": ["**Programming Faculty (CSE):**\n\n| Name | Subjects |\n|---|---|\n| Mr. Sagar Kumar | C, Python, C++ |"]
+    },
+    {
+      "tag": "ece_vlsi_faculty",
+      "patterns": [
+        "what is vlsi", "about vlsi",
+        "who teaches vlsi", "vlsi faculty", "vlsi teacher ece", "ece vlsi faculty",
+        "who is vlsi faculty", "vlsi subject teacher", "vlsi incharge",
+        "mr divya", "who is divya", "divya ece"
+      ],
+      "responses": ["**VLSI Faculty (ECE):**\n\n| Name | Subject |\n|---|---|\n| Mr. Divya | VLSI (Very Large Scale Integration) |"]
+    },
+    {
+      "tag": "ece_communication_faculty",
+      "patterns": [
+        "who teaches communication systems", "communication systems faculty ece",
+        "ece communication faculty", "communication teacher ece",
+        "mr kumar ece", "who is kumar ece", "communication systems teacher",
+        "communication incharge ece"
+      ],
+      "responses": ["**Communication Systems Faculty (ECE):**\n\n| Name | Subject |\n|---|---|\n| Mr. Kumar | Communication Systems |"]
+    },
+    {
+      "tag": "eee_power_faculty",
+      "patterns": [
+        "who teaches power systems", "power systems faculty eee", "eee power faculty",
+        "power systems teacher", "mr sudha", "who is sudha eee",
+        "power systems incharge", "sudha eee faculty"
+      ],
+      "responses": ["**Power Systems Faculty (EEE):**\n\n| Name | Subject |\n|---|---|\n| Mr. Sudha | Power Systems |"]
+    },
+    {
+      "tag": "eee_control_faculty",
+      "patterns": [
+        "who teaches control systems", "control systems faculty eee", "eee control faculty",
+        "control systems teacher", "mr venu", "who is venu eee",
+        "control systems incharge", "venu eee faculty"
+      ],
+      "responses": ["**Control Systems Faculty (EEE):**\n\n| Name | Subject |\n|---|---|\n| Mr. Venu | Control Systems |"]
+    },
+    {
+      "tag": "mech_thermo_faculty",
+      "patterns": [
+        "who teaches thermodynamics", "thermodynamics faculty mech", "mech thermodynamics faculty",
+        "thermodynamics teacher", "mr praveen", "who is praveen mech",
+        "thermodynamics incharge", "praveen mechanical faculty"
+      ],
+      "responses": ["**Thermodynamics Faculty (Mechanical):**\n\n| Name | Subject |\n|---|---|\n| Mr. Praveen | Thermodynamics |"]
+    },
+    {
+      "tag": "mech_design_faculty",
+      "patterns": [
+        "who teaches machine design", "machine design faculty mech", "mech design faculty",
+        "machine design teacher", "mr suman", "who is suman mech",
+        "machine design incharge", "suman mechanical faculty"
+      ],
+      "responses": ["**Machine Design Faculty (Mechanical):**\n\n| Name | Subject |\n|---|---|\n| Mr. Suman | Machine Design |"]
+    },
+    {
+      "tag": "csd_faculty_individual",
+      "patterns": [
+        "who teaches in csd", "csd subject faculty", "trinadha csd", "mr trinadha",
+        "asha devi csd", "yogeswara rao csd", "mr yogeswara rao",
+        "csd incharge faculty", "who is csd incharge", "asha devi faculty"
+      ],
+      "responses": ["**CSD Faculty Members:**\n\n| Name | Role |\n|---|---|\n| Mr. Ashok Kumar | HOD |\n| Mr. Trinadha | Faculty |\n| Mr. Asha Devi | Incharge |\n| Mr. Yogeswara Rao | Faculty |"]
+    },
+    {
+      "tag": "csm_faculty_individual",
+      "patterns": [
+        "who teaches in csm", "csm subject faculty", "trinadha csm", "csm incharge faculty",
+        "who is csm incharge", "yogeswara rao csm", "csm faculty members",
+        "asha devi csm", "csm teachers"
+      ],
+      "responses": ["**CSM Faculty Members:**\n\n| Name | Role |\n|---|---|\n| Mr. Ashok Kumar | HOD |\n| Mr. Trinadha | Incharge |\n| Mr. Asha Devi | Faculty |\n| Mr. Yogeswara Rao | Faculty |"]
+    },
+    {
+      "tag": "ece_faculty",
+      "patterns": [
+        "ECE faculty", "who teaches VLSI", "ECE department head", "Electronics teachers",
+        "who is the hod for ece", "who is ece hod", "ece hod", "hod of ece",
+        "ece head of department", "ece incharge", "who is hod ece", "ece hod name"
+      ],
+      "responses": ["**ECE Department Faculty:**\n\n| Name | Subject / Role |\n|---|---|\n| Dr. E. Govindha | HOD |\n| Mr. Divya | VLSI |\n| Mr. Kumar | Communication Systems |"]
+    },
+    {
+      "tag": "eee_faculty",
+      "patterns": [
+        "EEE faculty", "who teaches Control Systems", "EEE department head", "Electrical teachers",
+        "who is the hod for eee", "who is eee hod", "eee hod", "hod of eee",
+        "eee head of department", "eee incharge", "who is hod eee", "eee hod name"
+      ],
+      "responses": ["**EEE Department Faculty:**\n\n| Name | Subject / Role |\n|---|---|\n| Mr. Ramesh | HOD |\n| Mr. Sudha | Power Systems |\n| Mr. Venu | Control Systems |"]
+    },
+    {
+      "tag": "mech_faculty",
+      "patterns": [
+        "Mechanical faculty", "who teaches Thermodynamics", "Mechanical department head", "Mech teachers",
+        "who is the hod for mech", "who is mech hod", "mech hod", "hod of mech",
+        "mechanical head of department", "mech incharge", "who is hod mechanical", "mech hod name"
+      ],
+      "responses": ["**Mechanical Department Faculty:**\n\n| Name | Subject / Role |\n|---|---|\n| Mr. Kishore | HOD |\n| Mr. Praveen | Thermodynamics |\n| Mr. Suman | Machine Design |"]
+    },
+    {
+      "tag": "csd_faculty",
+      "patterns": [
+        "CSD faculty", "CSD FINAL YEAR faculty", "who teaches in CSD", "Data Science teachers",
+        "who is the hod for csd", "who is csd hod", "csd hod", "hod of csd",
+        "csd head of department", "csd incharge", "who is hod csd", "csd hod name"
+      ],
+      "responses": ["**CSD Department Faculty:**\n\n| Name | Subject / Role |\n|---|---|\n| Mr. Ashok Kumar | HOD |\n| Mr. Trinadha | Faculty |\n| Mr. Asha Devi | Incharge |\n| Mr. Yogeswara Rao | Faculty |"]
+    },
+    {
+      "tag": "csm_faculty",
+      "patterns": [
+        "CSM faculty", "CSM FINAL YEAR FACULTY", "who teaches in CSM",
+        "who is the hod for csm", "who is csm hod", "csm hod", "hod of csm",
+        "csm head of department", "csm incharge", "who is hod csm", "csm hod name"
+      ],
+      "responses": ["**CSM Department Faculty:**\n\n| Name | Subject / Role |\n|---|---|\n| Mr. Ashok Kumar | HOD |\n| Mr. Trinadha | Incharge |\n| Mr. Asha Devi | Faculty |\n| Mr. Yogeswara Rao | Faculty |"]
+    },
+    {
+      "tag": "principal",
+      "patterns": [
+        "principal", "who is principal", "principal name", "principal details", "principal info",
+        "tell me about principal", "educational qualification of principal",
+        "principal qualification", "college principal", "head of college"
+      ],
+      "responses": [
+        "The Principal of Avanthi College is **Dr. Chikkam P.V.N.J. Mohan Rao** — a highly qualified academician with a Ph.D and M.Tech in Computer Science and Engineering. He leads the college with great dedication! 🎓",
+        "Our Principal is **Dr. Chikkam P.V.N.J. Mohan Rao**. He holds a Ph.D and M.Tech in CSE and is known for his academic excellence and leadership.",
+        "**Dr. Chikkam P.V.N.J. Mohan Rao** is the Principal. With a Ph.D and M.Tech in Computer Science, he's one of the most respected figures at Avanthi College."
+      ]
+    },
+    {
+      "tag": "chairman",
+      "patterns": [
+        "chairman", "who is chairman", "chairman name", "chairman details", "chairman info",
+        "founder of avanthi", "who founded this college", "avanthi srinivas",
+        "college founder", "management details"
+      ],
+      "responses": ["Sri. Muttamsetti Srinivasa Rao (also known as Avanthi Srinivas) is the Chairman of Avanthi Educational Society. He is the founder of the Avanthi Group of Colleges, established in 1991, and a former Minister of Tourism, Culture, and Youth."]
+    },
+    {
+      "tag": "vice_principal",
+      "patterns": [
+        "vice principal", "who is vice principal", "vice principal name", "dean of academics",
+        "vice principal details", "vice principal info", "academic dean"
+      ],
+      "responses": ["Dr. R. Prasad Rao is the Dean of Academics and Vice Principal. He is a qualified academician with a Ph.D in ECE and also a Professor in ECE."]
+    },
+    {
+      "tag": "administrative_officer",
+      "patterns": [
+        "administrative officer", "who is ao", "ao details", "ao contact", "daniel sir",
+        "how can i contact ao", "admin officer", "ao info", "administrative office"
+      ],
+      "responses": ["Daniel sir is the Administrative Officer (A.O). You can contact him at +91-6306902467 to solve your queries."]
+    },
+    {
+      "tag": "tpo",
+      "patterns": [
+        "tpo", "who is tpo", "tpo details", "tpo contact", "tpo info",
+        "training placement officer", "placement head", "dean of placement",
+        "placement officer details"
+      ],
+      "responses": ["Dr. T. Srinivas Rao is the Dean of Training and Placement (TPO). He is a qualified academician with a Ph.D in EEE and also a Professor in EEE."]
+    },
+    {
+      "tag": "staff_contact",
+      "patterns": [
+        "how to contact a teacher", "staff email", "faculty email",
+        "professor phone number", "how to reach hod", "teacher contact details",
+        "faculty contact number", "how to contact faculty", "teacher email"
+      ],
+      "responses": ["You can contact faculty via their official college email (format: firstname.lastname@college.edu). HOD contacts are available at the department office. Staff are available during office hours: 9 AM to 4 PM on working days.", "Each faculty member has a college email ID listed on the department notice board and college website. You can also meet them during their designated consultation hours."]
+    },
+    {
+      "tag": "lab_incharge",
+      "patterns": [
+        "lab incharge", "lab in charge", "who is lab incharge", "lab incharge details",
+        "incharge of lab", "lab incharge name", "who handles the lab",
+        "lab supervisor", "lab staff", "who is responsible for lab",
+        "chemistry lab incharge", "physics lab incharge", "computer lab incharge",
+        "mech lab incharge", "eee lab incharge", "ece lab incharge",
+        "who is the lab incharge", "lab incharge list"
+      ],
+      "responses": ["Lab incharges for each lab:\n• Chemistry Lab — Chemistry Dept. Faculty (contact dept. office)\n• Physics Lab — Physics Dept. Faculty (contact dept. office)\n• Computer Lab (JKC) — CSE Dept. Faculty\n• ECE Lab — ECE Dept. Faculty\n• EEE Lab — EEE Dept. Faculty\n• Mech Lab — Mechanical Dept. Faculty\n\nFor the exact incharge name, please contact the respective department office or your class incharge."]
+    },
+    {
+      "tag": "faculty_list",
+      "patterns": [
+        "faculty", "facality", "faculty list", "all faculty", "college faculty",
+        "staff", "staff list", "all staff", "college staff", "clg faculty", "clg staff",
+        "teachers", "all teachers", "college teachers", "teaching staff",
+        "who are the teachers", "who are the faculty", "who are the staff",
+        "faculty members", "staff members", "faculty details", "staff details",
+        "faculty info", "staff info", "show faculty", "show staff",
+        "list of faculty", "list of staff", "list of teachers",
+        "faculty of college", "staff of college", "avanthi faculty", "avanthi staff"
+      ],
+      "responses": ["**College Faculty & Staff:**\n\n**Management:**\n- Chairman — Sri. Muttamsetti Srinivasa Rao\n- Principal — Dr. Chikkam P.V.N.J. Mohan Rao\n- Vice Principal — Dr. R. Prasad Rao\n- A.O (Admin) — Daniel Sir (+91-6306902467)\n- TPO — Dr. T. Srinivas Rao\n\n**HODs:**\n- CSE — Mr. U Nanaji\n- ECE — Dr. E. Govindha\n- EEE — Mr. Ramesh\n- Mechanical — Mr. Kishore\n- CSD — Mr. Ashok Kumar\n- CSM — Mr. Ashok Kumar\n\nFor department-wise faculty, ask like *'CSE faculty'*, *'ECE faculty'*, etc."]
+    },
+    {
+      "tag": "hod_general",
+      "patterns": [
+        "department heads", "heads of departments", "who are the hods",
+        "hod list", "all hods", "list of hods", "hod details", "hod info",
+        "who are hods", "show hods", "hod of all departments", "all department hods"
+      ],
+      "responses": ["**HODs by Department:**\n\n- CSE — Mr. U Nanaji\n- ECE — Dr. E. Govindha\n- EEE — Mr. Ramesh\n- Mechanical — Mr. Kishore\n- CSD — Mr. Ashok Kumar\n- CSM — Mr. Ashok Kumar\n\nFor department faculty details, ask like 'CSE faculty' or 'ECE faculty'."]
+    },
+    {
+      "tag": "courses_offered",
+      "patterns": ["What courses are available?", "List of departments", "Which B.Tech branches exist?", "Programs offered?"],
+      "responses": ["**Courses Offered:**\n\n- B.Tech — CSE (Computer Science)\n- B.Tech — ECE (Electronics & Communication)\n- B.Tech — EEE (Electrical & Electronics)\n- B.Tech — CSD (Computer Science & Data Science)\n- B.Tech — CSM (Computer Science & Machine Learning)\n- B.Tech — Mechanical Engineering\n- M.Tech\n- Diploma programs"]
+    },
+    {
+      "tag": "exam_schedule",
+      "patterns": [
+        "exam schedule", "exam dates", "exam timetable", "exam details", "exam info",
+        "when are the semester exams", "semester exam dates", "exam time",
+        "1st year exam", "2nd year exam", "3rd year exam", "final year exam",
+        "when is exam", "exam month", "upcoming exams"
+      ],
+      "responses": ["**Semester Exam Schedule:**\n\n- 1st Year (1-2) — June *(dates to be updated)*\n- 2nd Year (2-2) — April *(dates to be updated)*\n- 3rd Year (3-2) — March *(dates to be updated)*\n- Final Year — Project review in March\n\nCheck the college notice board or portal for exact dates."]
+    },
+    {
+      "tag": "bus_details",
+      "patterns": [
+        "bus routes", "bus route", "bus details", "bus detail", "bus info", "bus information",
+        "college bus", "bus numbers", "bus list", "tell me about bus routes", "what are the bus routes",
+        "bus from college", "bus to vizag", "bus to anakapalli", "bus to narsipatnam",
+        "bus timing", "bus schedule", "which bus", "bus stops"
+      ],
+      "responses": ["**College Bus Routes:**\n\n| Destination | Bus No. | Via |\n|---|---|---|\n| Vizag | 9618 | Scindia |\n| Vizag | 7519 | Madillapalem |\n| Vizag | 4600 | Madillapalem |\n| Vizag | 0459 | BC Road |\n| Vizag | 2960 | Gajuwaka |\n| Gopalapatnam | 0585 | Gajuwaka |\n| Gopalapatnam | 3354 | Sabbavaram, Pendurthi |\n| Anakapalli | 7914, 7253, 7555 | — |\n| Achithapuram | 6467 | Yalamanchili |\n| Chowdavaram | 0015 | — |\n| Narsipatnam | 0801 | — |"]
+    },
+    {
+      "tag": "bus_fee",
+      "patterns": [
+        "bus fee", "bus fees", "transport fee", "transport cost", "bus charges",
+        "how much is bus fee", "bus fee details", "tell me about bus fee", "what are the bus fees",
+        "bus fee vizag", "bus fee anakapalli", "bus fee narsipatnam"
+      ],
+      "responses": ["**Bus Fee by Route:**\n\n| Route | Fee |\n|---|---|\n| Vizag | ₹23,000 |\n| Gajuwaka / Achithapuram / Chowdavaram | ₹19,500 |\n| Anakapalli | ₹16,000 |\n| Narsipatnam | ₹12,000 |"]
+    },
+    {
+      "tag": "gym_details",
+      "patterns": [
+        "gym details", "gym detail", "gym", "about gym", "gym info", "gym information",
+        "what are the gym timings", "location for the gym", "gym timings", "gym location",
+        "is the gym available for hostelers", "gym facilities", "gym address", "gym hours"
+      ],
+      "responses": ["Timings for the Gym: 6 AM to 9 AM, Evening 3 PM to 9 PM. Location: Diploma block backside."]
+    },
+    {
+      "tag": "lab_details",
+      "patterns": [
+        "lab details", "lab detail", "labs details", "labs detail",
+        "lab", "labs", "all labs", "show labs", "list labs",
+        "how many labs are there", "show all labs", "list all labs", "names of all labs",
+        "all labs in college", "what labs does the college have", "lab list", "labs available",
+        "labs in college", "college labs", "what are the labs", "tell me about labs",
+        "lab information", "labs info", "which labs are there", "lab names"
+      ],
+      "responses": ["Here are all the labs in our college:\n\n1. 🖥️ JKC Lab (Computer) — CSE dept, 3rd floor, Main Block\n2. 🖥️ Ground Floor Lab (Computer) — Main Block\n3. 🖥️ New Lab-1 & Lab-2 (Computer) — New Building, Ground Floor\n4. 📡 ECE Lab (Electronics) — 2nd floor, Main Block\n5. ⚡ EEE Lab (Electrical) — 2nd floor, Main Block\n6. ⚙️ Mech Lab (Mechanical/Workshop) — Near Cricket Court\n7. 🧪 Chemistry Lab — Science Block, Ground Floor\n8. 🔬 Physics Lab — Science Block, First Floor\n9. 📐 CEW Lab — 3rd floor, Decennial Block\n\nAsk me about any specific lab for more details!"]
+    },
+    {
+      "tag": "chemistry_lab",
+      "patterns": [
+        "chemistry lab", "where is chemistry lab", "chemistry lab location", "chemistry lab timings",
+        "chemistry lab details", "chemistry laboratory", "where is the chemistry laboratory",
+        "chemistry lab address", "chemistry lab equipment", "chemistry practical lab",
+        "tell me about chemistry lab", "chemistry lab information", "science lab chemistry"
+      ],
+      "responses": ["Chemistry Lab is located in the Science Block, Ground Floor. It is equipped with fume hoods, chemical storage cabinets, distillation setups, titration equipment, and safety gear. Lab timings: 9 AM to 4 PM on working days. Capacity: 30 students per batch."]
+    },
+    {
+      "tag": "physics_lab",
+      "patterns": [
+        "physics lab", "where is physics lab", "physics lab location", "physics lab timings",
+        "physics lab details", "physics laboratory", "where is the physics laboratory",
+        "physics lab address", "physics lab equipment", "physics practical lab",
+        "tell me about physics lab", "physics lab information", "science lab physics",
+        "optics lab", "mechanics lab"
+      ],
+      "responses": ["Physics Lab is located in the Science Block, First Floor. It has equipment for optics, mechanics, electricity and magnetism experiments including spectrometers, sonometers, potentiometers, and CRO. Lab timings: 9 AM to 4 PM on working days. Capacity: 30 students per batch."]
+    },
+    {
+      "tag": "computer_lab",
+      "patterns": [
+        "computer lab", "where is computer lab", "computer lab location", "computer lab timings",
+        "computer lab details", "computer laboratory",
+        "how many computers", "computer lab address", "programming lab", "coding lab",
+        "tell me about computer lab", "computer lab information", "new lab", "new building lab",
+        "CSE lab", "software lab", "internet lab"
+      ],
+      "responses": ["Computer Labs are in the Main Block. JKC Lab is on the 3rd floor (CSE dept), Ground Floor Lab is in the main block, and New Lab-1 & Lab-2 are in the new building (ground floor). All labs have high-speed internet, 200+ systems with Windows/Linux, and software like VS Code, Python, Java, MATLAB. Timings: 9 AM to 5 PM."]
+    },
+    {
+      "tag": "mech_lab",
+      "patterns": [
+        "mech lab", "mechanical lab", "where is mechanical lab", "mechanical lab details",
+        "mech lab location", "mechanical laboratory", "mech laboratory",
+        "where is mech lab", "mechanical lab address", "mechanical lab equipment",
+        "tell me about mechanical lab", "mechanical lab information", "mech lab timings"
+      ],
+      "responses": ["Mechanical Lab is located near the Cricket Court. It includes Workshop Lab, Fluid Mechanics Lab, Thermodynamics Lab, and CAD/CAM Lab. Equipment includes lathes, milling machines, drilling machines, heat exchangers, and CNC machines. Lab timings: 9 AM to 4 PM. Safety gear is mandatory."]
+    },
+    {
+      "tag": "eee_lab",
+      "patterns": [
+        "EEE lab", "electrical lab", "where is EEE lab", "EEE lab details", "electrical lab location",
+        "power systems lab", "EEE laboratory", "electrical laboratory", "where is electrical lab",
+        "EEE lab address", "EEE lab equipment", "tell me about EEE lab", "EEE lab information",
+        "EEE lab timings", "electrical machines lab", "power electronics lab", "control systems lab",
+        "switchgear lab", "PLC lab"
+      ],
+      "responses": ["EEE Lab is on the 2nd floor of the Main Block. It has Electrical Machines Lab, Power Electronics Lab, Control Systems Lab, and Switchgear Lab. Equipment includes DC/AC machines, transformers, power converters, and PLC trainers. Lab timings: 9 AM to 4 PM."]
+    },
+    {
+      "tag": "ece_lab",
+      "patterns": [
+        "ECE lab", "electronics lab", "where is ECE lab", "ECE lab details", "electronics lab location",
+        "ECE laboratory", "electronics laboratory",
+        "where is electronics lab", "ECE lab address", "ECE lab equipment",
+        "tell me about ECE lab", "ECE lab information", "ECE lab timings"
+      ],
+      "responses": ["ECE Lab is on the 2nd floor of the Main Block. It includes Digital Electronics Lab, Analog Communication Lab, VLSI Lab, Embedded Systems Lab, and Microprocessor Lab. Equipment includes DSOs, function generators, FPGA boards, Arduino/Raspberry Pi kits, and spectrum analyzers. Lab timings: 9 AM to 4 PM."]
+    },
+    {
+      "tag": "vlsi_lab",
+      "patterns": [
+        "vlsi", "vlsi lab", "where is vlsi lab", "vlsi lab location", "vlsi lab floor",
+        "vlsi laboratory", "where is the vlsi lab", "vlsi lab details", "vlsi lab info",
+        "where is vlsi", "vlsi location", "vlsi floor"
+      ],
+      "responses": ["VLSI Lab is located in the ECE Lab on the 2nd floor of the Main Block. It has FPGA boards, VLSI design tools, and simulation software. Lab timings: 9 AM to 4 PM."]
+    },
+    {
+      "tag": "digital_electronics_lab",
+      "patterns": [
+        "digital electronics lab", "where is digital electronics lab", "digital lab location",
+        "digital lab ece", "digital electronics laboratory", "digital lab details"
+      ],
+      "responses": ["Digital Electronics Lab is part of the ECE Lab on the 2nd floor of the Main Block. It has logic trainers, digital ICs, and oscilloscopes. Lab timings: 9 AM to 4 PM."]
+    },
+    {
+      "tag": "embedded_lab",
+      "patterns": [
+        "embedded systems lab", "where is embedded lab", "embedded lab location",
+        "embedded lab ece", "embedded systems laboratory", "arduino lab", "raspberry pi lab",
+        "embedded lab details", "where is arduino lab"
+      ],
+      "responses": ["Embedded Systems Lab is part of the ECE Lab on the 2nd floor of the Main Block. It has Arduino kits, Raspberry Pi boards, microcontrollers, and IoT development tools. Lab timings: 9 AM to 4 PM."]
+    },
+    {
+      "tag": "microprocessor_lab",
+      "patterns": [
+        "microprocessor lab", "where is microprocessor lab", "microprocessor lab location",
+        "microprocessor laboratory", "micro lab ece", "microprocessor lab details",
+        "8086 lab", "assembly language lab"
+      ],
+      "responses": ["Microprocessor Lab is part of the ECE Lab on the 2nd floor of the Main Block. It has 8086/8051 microprocessor kits, interfacing boards, and assembly language tools. Lab timings: 9 AM to 4 PM."]
+    },
+    {
+      "tag": "power_lab",
+      "patterns": [
+        "power systems lab", "where is power lab", "power lab location",
+        "power electronics lab", "power lab eee", "electrical machines lab",
+        "where is power systems lab", "power lab details"
+      ],
+      "responses": ["Power Systems Lab is part of the EEE Lab on the 2nd floor of the Main Block. It has DC/AC machines, transformers, power converters, and power electronics trainers. Lab timings: 9 AM to 4 PM."]
+    },
+    {
+      "tag": "control_lab",
+      "patterns": [
+        "control systems lab", "where is control lab", "control lab location",
+        "control systems laboratory", "control lab eee", "plc lab",
+        "where is control systems lab", "control lab details", "plc lab location"
+      ],
+      "responses": ["Control Systems Lab is part of the EEE Lab on the 2nd floor of the Main Block. It has PLC trainers, control system simulators, and feedback control kits. Lab timings: 9 AM to 4 PM."]
+    },
+    {
+      "tag": "workshop_lab",
+      "patterns": [
+        "workshop lab", "where is workshop", "workshop location", "workshop details",
+        "lathe machine lab", "cnc lab", "where is cnc lab", "cnc machine location",
+        "mech workshop", "mechanical workshop", "workshop mech"
+      ],
+      "responses": ["Workshop Lab is part of the Mechanical Lab located near the Cricket Court. It has lathe machines, milling machines, drilling machines, and CNC machines. Lab timings: 9 AM to 4 PM. Safety gear is mandatory."]
+    },
+    {
+      "tag": "fluid_mechanics_lab",
+      "patterns": [
+        "fluid mechanics lab", "where is fluid mechanics lab", "fluid lab location",
+        "fluid lab mech", "fluid mechanics laboratory", "fluid lab details"
+      ],
+      "responses": ["Fluid Mechanics Lab is part of the Mechanical Lab near the Cricket Court. It has flow measurement equipment, pumps, turbines, and hydraulic benches. Lab timings: 9 AM to 4 PM."]
+    },
+    {
+      "tag": "jkc_lab",
+      "patterns": [
+        "jkc", "jkc lab", "where is jkc", "where is jkc lab", "jkc lab location", "jkc lab floor",
+        "jkc laboratory", "jkc lab details", "jkc lab cse", "jkc lab info",
+        "JKC lab", "JKC laboratory", "JKC", "about jkc lab"
+      ],
+      "responses": ["JKC Lab (Computer Lab) is on the 3rd floor of the Main Block, managed by the CSE department. It has 200+ systems with Windows/Linux, high-speed internet, and software like VS Code, Python, Java, and MATLAB. Timings: 9 AM to 5 PM."]
+    },
+    {
+      "tag": "cew_lab",
+      "patterns": [
+        "cew lab", "where is cew lab", "cew lab location", "cew laboratory",
+        "cew lab details", "cew lab floor", "decennial block lab"
+      ],
+      "responses": ["CEW Lab is on the 3rd floor of the Decennial Block. Lab timings: 9 AM to 4 PM."]
+    },
+    {
+      "tag": "crt_details",
+      "patterns": [
+        "crt details", "crt detail", "crt", "what is crt", "about crt",
+        "crt information", "crt info", "tell me about crt",
+        "when the CRT started", "what is the fee for CRT", "from which year the CRT is started",
+        "campus recruitment training", "crt fee", "crt year", "crt for which year",
+        "crt courses", "crt training", "crt subjects", "crt aptitude", "crt programming"
+      ],
+      "responses": ["**CRT (Campus Recruitment Training):**\n\n- Starts from: 2nd year through Final year\n- Fee: ₹10,000 per 2 semesters\n\n**Subjects covered:**\n- Aptitude, Arithmetic & Reasoning\n- Programming — C, Python, DSA\n- Company-specific training (Infosys, TCS, CTS, etc.)"]
+    },
+    {
+      "tag": "library_details",
+      "patterns": [
+        "library details", "library detail", "library", "about library", "library info",
+        "library information", "library timings", "library hours", "library fine",
+        "what are the timings for library", "how many journals are available in library",
+        "library fine details", "library books", "library journals", "library membership"
+      ],
+      "responses": ["Library timings: 10:00 AM to 4:00 PM. 64 journals are available. Up to 14 days - no need to pay fine for books. The fine for single book is ₹1 per day."]
+    },
+    {
+      "tag": "events",
+      "patterns": [
+        "events", "event details", "event detail", "college events", "annual events",
+        "what are the events conducted", "names of the events", "events list",
+        "events in college", "upcoming events", "cultural events", "technical events",
+        "fest details", "synergy event", "sankranthi event", "farewell", "graduation day",
+        "is anything there today", "is there anything today", "what is today in college",
+        "anything today", "today event", "today in college", "what is happening today",
+        "is any thing there today", "anything happening today", "today schedule"
+      ],
+      "responses": ["**Annual College Events:**\n\n| Month | Event |\n|---|---|\n| January | 🎉 Sankranthi Event |\n| February | 🔧 Synergy — Technical Fest |\n| March | 🎓 Farewell |\n| April | 🏆 Graduation Day |\n| August | 🏅 Sports Day |\n| September | 💡 Diploma Tech Fest |\n| November | 🤝 Induction Meet |"]
+    },
+    {
+      "tag": "building_fee",
+      "patterns": [
+        "building fee", "building fund", "building charges", "building fee details",
+        "what is the building fund", "what is the building fee", "building fee for autonomous",
+        "autonomous building fee", "jntu fee", "non autonomous fee"
+      ],
+      "responses": ["**Building Fee:**\n\n| Student Type | Fee |\n|---|---|\n| Autonomous students | ₹15,000 |\n| Non-Autonomous (JNTU) | ₹5,000 |"]
+    },
+    {
+      "tag": "revaluation",
+      "patterns": [
+        "revaluation", "revaluation details", "revaluation fee", "revaluation dates",
+        "revaluation updates", "what are the revaluation updates", "when will revaluation dates be released",
+        "what is the fee for revaluation", "reval fee", "reval dates", "reval results"
+      ],
+      "responses": ["**Revaluation Details:**\n\n- Fee: ₹1,000 per subject\n\n**Status updates:**\n- 1st Year (1-1 & 1-2) — Dates releasing soon\n- 2nd Year (2-1 & 2-2) — Results declared\n- 3rd Year (3-1 & 3-2) — Results declared\n- Final Year (4-1) — Results declared"]
+    },
+    {
+      "tag": "supply",
+      "patterns": [
+        "supply", "supply details", "supply exam", "supply fee", "supply dates",
+        "supply updates", "what are the supply updates", "when will supply dates be released",
+        "what is the fee for supply", "backlog exam", "supplementary exam", "supply results"
+      ],
+      "responses": ["**Supply (Supplementary) Exam Details:**\n\n**Fee:**\n- 1 subject — ₹285\n- More than 4 subjects — ₹770\n\n**Status updates:**\n- 1st Year (1-1) — Supply results released\n- 2nd Year (2-1) — Supply results released\n- 3rd Year (3-1) — Supply results released\n- Final Year (4-1) — Supply results released\n\n*Currently no supply exams pending for any students.*"]
+    },
+    {
+      "tag": "weather",
+      "patterns": ["what's the weather", "how's the weather today", "weather today", "is it raining", "weather forecast"],
+      "responses": ["I can't provide real-time weather info, but you can check a weather app or Google for the latest forecast in Narsipatnam! 🌤️"]
+    },
+    {
+      "tag": "general_knowledge",
+      "patterns": ["what is ai", "what is artificial intelligence", "tell me about ai", "how does ai work",
+        "what is data science", "explain data science", "tell me about data science",
+        "what is cyber security", "how does cyber security work", "why is cyber security important",
+        "what is cloud computing", "explain cloud computing", "how does cloud computing work",
+        "what are programming languages", "which coding language should i learn", "tell me about python",
+        "what is digital marketing", "explain seo", "how does social media marketing work"
+      ],
+      "responses": [
+        "That's a great topic! Here's a quick overview:\n\n- **AI** — Simulation of human intelligence in machines; enables learning and decision-making.\n- **Data Science** — Uses statistics, programming & ML to extract insights from data.\n- **Cyber Security** — Protecting systems and data from digital attacks using encryption, firewalls etc.\n- **Cloud Computing** — Accessing computing resources over the internet (AWS, Azure, Google Cloud).\n- **Python** — Widely used for AI, data science, and web development due to its simplicity.\n\nWant to learn any of these? Ask me about CRT training or online courses! 😊"
+      ]
+    },
+    {
+      "tag": "online_learning",
+      "patterns": ["what are online courses", "explain e-learning", "what is an online bootcamp",
+        "where can i learn online", "free online courses", "online learning platforms",
+        "are there free courses", "where can i find free learning resources", "can i learn new skills for free"
+      ],
+      "responses": ["You can learn online for free on platforms like **Coursera**, **Udemy**, **Khan Academy**, **NPTEL**, and **YouTube**. Many offer certificates too! For college-specific training, check out our **CRT program** which covers aptitude, C, Python, and DSA. 🎓"]
+    },
+    {
+      "tag": "career_growth",
+      "patterns": ["how can i advance my career", "what skills are in demand", "how do i get a better job",
+        "career tips", "how to grow in career", "skills for placement", "how to get placed",
+        "career advice", "what should i learn for job", "in demand skills"
+      ],
+      "responses": ["**Tips to grow your career:**\n\n- Build strong fundamentals in your core subject\n- Learn in-demand skills: Python, Data Science, Cloud, Cyber Security\n- Get certified (NPTEL, Coursera, AWS)\n- Participate in our **CRT program** for placement prep\n- Build projects and a strong resume\n- Network and attend college placement drives\n\nOur TPO Dr. T. Srinivas Rao can guide you further! 🚀"]
+    },
+    {
+      "tag": "cse_course_info",
+      "patterns": [
+        "tell me about cse program", "what is cse", "about cse branch", "cse branch info",
+        "computer science engineering", "cse course overview", "cse branch overview",
+        "cse", "about cse", "cse info", "cse details", "what is cse branch"
+      ],
+      "responses": ["**CSE (Computer Science & Engineering):**\n\nDuration: 4 years. Focuses on programming, data structures, algorithms, operating systems, databases, networking, AI, and cloud computing. Great for careers in software development, AI/ML, and IT. HOD: Mr. U Nanaji."]
+    },
+    {
+      "tag": "cse_syllabus",
+      "patterns": ["cse syllabus", "subjects in cse", "cse curriculum", "what subjects in cse",
+        "cse subjects list", "topics in cse", "cse course content", "what do they teach in cse",
+        "cse subjects", "list cse subjects", "show cse subjects",
+        "computer science subjects", "computer science syllabus"
+      ],
+      "responses": ["**CSE Syllabus (Key Subjects):**\n\n| Year | Subjects |\n|---|---|\n| 1st Year | Programming in C, Maths, Physics, English |\n| 2nd Year | Data Structures, DBMS, OS, Computer Networks |\n| 3rd Year | Algorithms, AI, ML, Cloud Computing, IoT |\n| 4th Year | Project, Electives, Industry Training |"]
+    },
+    {
+      "tag": "ece_course_info",
+      "patterns": ["tell me about ece program", "what is ece",
+        "about ece branch", "ece branch info", "electronics and communication engineering",
+        "ece course overview", "ece branch overview",
+        "ece", "about ece", "ece info", "ece details", "what is ece branch"
+      ],
+      "responses": ["**ECE (Electronics & Communication Engineering):**\n\nDuration: 4 years. Focuses on electronics, communication systems, embedded systems, VLSI, and signal processing. Great for careers in telecom, embedded systems, and hardware design. HOD: Dr. E. Govindha."]
+    },
+    {
+      "tag": "ece_syllabus",
+      "patterns": [
+        "ece syllabus", "subjects in ece", "ece curriculum", "what subjects in ece",
+        "ece subjects list", "topics in ece", "what do they teach in ece",
+        "ece subjects", "ece subject list",
+        "list ece subjects", "show ece subjects", "ece subject names"
+      ],
+      "responses": ["**ECE Syllabus (Key Subjects):**\n\n| Year | Subjects |\n|---|---|\n| 1st Year | Basic Electronics, Maths, Physics |\n| 2nd Year | Digital Electronics, Signals & Systems, Analog Communication |\n| 3rd Year | Microprocessors, VLSI, Embedded Systems |\n| 4th Year | Project, Wireless Communication, Electives |"]
+    },
+    {
+      "tag": "eee_course_info",
+      "patterns": ["tell me about eee program", "eee course details", "what is eee",
+        "about eee branch", "eee branch info", "electrical and electronics engineering",
+        "eee", "about eee", "eee info", "eee details", "what is eee branch"
+      ],
+      "responses": ["**EEE (Electrical & Electronics Engineering):**\n\nDuration: 4 years. Focuses on electrical machines, power systems, control systems, and renewable energy. Great for careers in power sector, energy, and automation. HOD: Mr. Ramesh."]
+    },
+    {
+      "tag": "eee_syllabus",
+      "patterns": ["eee syllabus", "subjects in eee", "eee curriculum", "what subjects in eee",
+        "eee subjects list", "topics in eee", "what do they teach in eee",
+        "eee subjects", "list eee subjects", "show eee subjects"
+      ],
+      "responses": ["**EEE Syllabus (Key Subjects):**\n\n| Year | Subjects |\n|---|---|\n| 1st Year | Basic Electrical, Maths, Physics |\n| 2nd Year | Electrical Machines, Power Electronics, Network Theory |\n| 3rd Year | Control Systems, Switchgear, Power Systems |\n| 4th Year | Project, Renewable Energy, Electives |"]
+    },
+    {
+      "tag": "mech_course_info",
+      "patterns": ["tell me about mechanical program", "mech course details", "what is mechanical engineering",
+        "about mech branch", "mechanical branch info", "mechanical engineering details",
+        "mech", "about mech", "mech info", "mech details", "what is mech branch", "mechanical"
+      ],
+      "responses": ["**Mechanical Engineering:**\n\nDuration: 4 years. Focuses on machine design, thermodynamics, manufacturing processes, fluid mechanics, and robotics. Great for careers in manufacturing, automotive, and aerospace. HOD: Mr. Kishore."]
+    },
+    {
+      "tag": "mech_syllabus",
+      "patterns": ["mech syllabus", "subjects in mechanical", "mechanical curriculum", "what subjects in mech",
+        "mech subjects list", "topics in mechanical", "what do they teach in mechanical",
+        "mech subjects", "mechanical subjects", "list mech subjects"
+      ],
+      "responses": ["**Mechanical Syllabus (Key Subjects):**\n\n| Year | Subjects |\n|---|---|\n| 1st Year | Engineering Drawing, Maths, Physics |\n| 2nd Year | Thermodynamics, Fluid Mechanics, Material Science |\n| 3rd Year | Machine Design, CAD/CAM, Manufacturing |\n| 4th Year | Project, Robotics, Electives |"]
+    },
+    {
+      "tag": "csd_course_info",
+      "patterns": ["tell me about csd program", "csd course details", "what is csd",
+        "about csd branch", "csd branch info", "computer science data science",
+        "csd", "about csd", "csd info", "csd details", "what is csd branch"
+      ],
+      "responses": ["**CSD (Computer Science & Data Science):**\n\nDuration: 4 years. Focuses on programming, data science, AI/ML, big data analytics, and cloud computing. Final year (4-2) students are currently working on their projects. HOD: Mr. Ashok Kumar."]
+    },
+    {
+      "tag": "csd_syllabus",
+      "patterns": ["csd syllabus", "subjects in csd", "csd curriculum", "what subjects in csd",
+        "csd subjects list", "csd final year syllabus", "topics in csd",
+        "csd subjects", "list csd subjects", "show csd subjects"
+      ],
+      "responses": ["**CSD Syllabus (Final Year — 4-2):**\n\n| Subject |\n|---|\n| IoT (Internet of Things) |\n| AI Chatbot Development |\n| Data Communication |\n| Cloud Computing |\n| Big Data Analytics |\n\nStudents are currently working on their final year projects. 🎓"]
+    },
+    {
+      "tag": "csm_course_info",
+      "patterns": ["tell me about csm program", "csm course details", "what is csm",
+        "about csm branch", "csm branch info", "computer science machine learning",
+        "csm", "about csm", "csm info", "csm details", "what is csm branch"
+      ],
+      "responses": ["**CSM (Computer Science & Machine Learning):**\n\nDuration: 4 years. Focuses on programming, machine learning, AI, data structures, and software engineering. Final year (4-2) students are currently working on their projects. HOD: Mr. Ashok Kumar."]
+    },
+    {
+      "tag": "csm_syllabus",
+      "patterns": ["csm syllabus", "subjects in csm", "csm curriculum", "what subjects in csm",
+        "csm subjects list", "csm final year syllabus", "topics in csm",
+        "csm subjects", "list csm subjects", "show csm subjects"
+      ],
+      "responses": ["**CSM Syllabus (Final Year — 4-2):**\n\n| Subject |\n|---|\n| IoT (Internet of Things) |\n| Data Communication |\n| Cloud Computing |\n| Big Data Analytics |\n\nStudents are currently working on their final year projects. 🎓"]
+    },
+    {
+      "tag": "crt_course_details",
+      "patterns": ["what are the crt courses", "crt course details", "what concepts are taught in crt",
+        "crt subjects details", "what is taught in crt", "crt syllabus", "crt topics",
+        "crt aptitude", "crt programming topics", "what does crt teach"
+      ],
+      "responses": ["**CRT Course Details:**\n\n| Module | Topics |\n|---|---|\n| Aptitude | Arithmetic, Reasoning, Verbal Ability |\n| Programming | C, Python, DSA (Data Structures & Algorithms) |\n| Company Training | Infosys, TCS, CTS specific prep |\n\nCRT runs from 2nd year to Final year. Fee: ₹10,000 per 2 semesters."]
+    }
+  ]
+}

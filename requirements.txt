@@ -1,0 +1,8 @@
+streamlit
+scikit-learn
+nltk
+pyttsx3
+SpeechRecognition
+pyaudio
+sentence-transformers
+markdown
