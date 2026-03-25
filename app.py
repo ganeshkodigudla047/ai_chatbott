@@ -344,8 +344,8 @@ if "messages" not in st.session_state:
 if "voice_output" not in st.session_state: st.session_state.voice_output = False
 if "last_dept" not in st.session_state: st.session_state.last_dept = None
 if "last_topic" not in st.session_state: st.session_state.last_topic = "course_info"
-if "_tts_pid" not in st.session_state: st.session_state["_tts_pid"] = None
 if "_toggle_voice" not in st.session_state: st.session_state["_toggle_voice"] = False
+if "_tts_text" not in st.session_state: st.session_state["_tts_text"] = ""
 
 def process(user_text):
     response = chatbot_reply(user_text)
@@ -434,7 +434,18 @@ strong {{ font-weight:700; }}
   c.addEventListener("scroll",function(){{us=(c.scrollHeight-c.scrollTop-c.clientHeight)>80;}});
   new MutationObserver(function(){{if(!us)s();}}).observe(c,{{childList:true,subtree:true}});
 }})();
-</script></body></html>""", height=430, scrolling=False)
+(function(){{
+  var txt = "{{TTS_PLACEHOLDER}}";
+  if(txt && window.speechSynthesis){{
+    window.speechSynthesis.cancel();
+    if(txt.length > 0){{
+      var u = new SpeechSynthesisUtterance(txt);
+      u.rate = 1.0; u.pitch = 1.0; u.volume = 1.0;
+      window.speechSynthesis.speak(u);
+    }}
+  }}
+}})();
+</script></body></html>""".replace("{{TTS_PLACEHOLDER}}", st.session_state.get("_tts_text","").replace('"','\\"')), height=430, scrolling=False)
 
 # ── Input row ──────────────────────────────────────────────────────────────────
 st.markdown('<div style="background:#f0f4f8;border-top:1px solid #dde3f0;padding-top:4px">', unsafe_allow_html=True)
