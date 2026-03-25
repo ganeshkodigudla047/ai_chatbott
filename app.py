@@ -435,7 +435,26 @@ _voice_on = st.session_state.get("voice_output", False)
 _voice_label = "🔊 ON" if _voice_on else "🔇 OFF"
 _prefill = st.session_state.pop("_mic_prefill", "") if "_mic_prefill" in st.session_state else ""
 
-# Streamlit form handles all actions
+# CSS: pull the mic iframe up to overlap the right side of the input box
+st.markdown("""<style>
+/* position mic iframe over the input right edge */
+div[data-testid="stForm"] { position: relative; }
+iframe[title="components.html"] {
+    position: absolute !important;
+    right: 52px !important;
+    top: 50% !important;
+    transform: translateY(-50%) !important;
+    width: 36px !important;
+    height: 36px !important;
+    border: none !important;
+    background: transparent !important;
+    z-index: 999 !important;
+    pointer-events: all !important;
+}
+/* pad input so text doesn't go under mic icon */
+div[data-testid="stTextInput"] input { padding-right: 38px !important; }
+</style>""", unsafe_allow_html=True)
+
 with st.form("chat_form", clear_on_submit=True):
     ci, c_send, c_voice, c_clear = st.columns([5, 1, 1, 1])
     user_input = ci.text_input("msg", label_visibility="collapsed",
@@ -448,61 +467,43 @@ with st.form("chat_form", clear_on_submit=True):
     if send and user_input.strip(): process(user_input.strip()); st.rerun()
     if clear: clear_chat(); st.rerun()
 
-# Mic button in components.html — fills Streamlit input via postMessage listener
-# The listener is injected via st.markdown (same React page, not sandboxed)
-st.markdown("""<script>
-window.addEventListener("message", function(e) {
-    if(e.data && e.data.type === "mic_result") {
-        var inp = document.querySelector('input[data-testid="stTextInput"]');
-        if(!inp) inp = document.querySelector('.stTextInput input');
-        if(inp) {
-            var setter = Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype,'value').set;
-            setter.call(inp, e.data.text);
-            inp.dispatchEvent(new Event('input', {bubbles:true}));
-            inp.focus();
-        }
-    }
-});
-</script>""", unsafe_allow_html=True)
+# Mic component — on result, stores in session via query param and reruns
+_mic_qp = st.query_params.get("mic", "")
+if _mic_qp:
+    st.query_params.clear()
+    st.session_state["_mic_prefill"] = _mic_qp
+    st.rerun()
 
-components.html(f"""
+components.html("""
 <style>
-  body {{ margin:0; padding:2px 0 0; background:transparent; }}
-  #micBtn {{
-    background:none; border:none; cursor:pointer; font-size:20px;
-    padding:2px 6px; opacity:0.5; transition:opacity .15s; vertical-align:middle;
-  }}
-  #micBtn:hover {{ opacity:1; }}
-  #micBtn.on {{ opacity:1; animation:pulse .7s infinite; }}
-  @keyframes pulse {{ 0%,100%{{opacity:1}} 50%{{opacity:.2}} }}
-  #hint {{ font-size:11px; color:#888; margin-left:4px; }}
+  html,body{margin:0;padding:0;background:transparent;overflow:hidden;
+            display:flex;align-items:center;justify-content:center;height:100%;}
+  #m{background:none;border:none;cursor:pointer;font-size:19px;
+     padding:0;opacity:0.55;transition:opacity .15s,transform .15s;}
+  #m:hover{opacity:1;transform:scale(1.15);}
+  #m.on{opacity:1;animation:p .6s infinite;}
+  @keyframes p{0%,100%{opacity:1}50%{opacity:.2}}
 </style>
-<button id="micBtn" onclick="startMic()" title="Click to speak">🎤</button>
-<span id="hint">click to speak</span>
+<button id="m" onclick="go()" title="Speak">🎤</button>
 <script>
-function startMic() {{
-  var SR = window.SpeechRecognition || window.webkitSpeechRecognition;
-  if(!SR) {{ document.getElementById("hint").innerText="Not supported — use Chrome/Edge"; return; }}
-  var btn = document.getElementById("micBtn");
-  var hint = document.getElementById("hint");
-  var r = new SR();
-  r.lang = "en-IN"; r.interimResults = false; r.maxAlternatives = 1;
-  btn.classList.add("on"); btn.innerText = "🔴"; hint.innerText = "listening...";
+function go(){
+  var SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+  if(!SR){alert("Use Chrome or Edge");return;}
+  var b=document.getElementById("m"),r=new SR();
+  r.lang="en-IN";r.interimResults=false;r.maxAlternatives=1;
+  b.classList.add("on");b.textContent="🔴";
   r.start();
-  r.onresult = function(e) {{
-    var txt = e.results[0][0].transcript;
-    btn.classList.remove("on"); btn.innerText = "🎤"; hint.innerText = "heard: " + txt;
-    window.parent.postMessage({{type:"mic_result", text:txt}}, "*");
-  }};
-  r.onerror = function(ev) {{
-    btn.classList.remove("on"); btn.innerText = "🎤";
-    hint.innerText = "error: " + ev.error;
-  }};
-  r.onend = function() {{
-    btn.classList.remove("on");
-    if(btn.innerText==="🔴") {{ btn.innerText="🎤"; hint.innerText="click to speak"; }}
-  }};
-}}
+  r.onresult=function(e){
+    var t=e.results[0][0].transcript;
+    b.classList.remove("on");b.textContent="🎤";
+    // Navigate parent to set query param
+    var url=new URL(window.top.location.href);
+    url.searchParams.set("mic",t);
+    window.top.location.href=url.toString();
+  };
+  r.onerror=function(){b.classList.remove("on");b.textContent="🎤";};
+  r.onend=function(){b.classList.remove("on");if(b.textContent==="🔴")b.textContent="🎤";};
+}
 </script>
-""", height=38, scrolling=False)
+""", height=36, scrolling=False)
 st.markdown('</div>', unsafe_allow_html=True)
