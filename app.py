@@ -41,6 +41,7 @@ def load_model(_version="v11"):
     import os, pickle
     from sentence_transformers import SentenceTransformer
     cache_path = f"model/embeddings_{_version}.pkl"
+    
     with open("data/intents.json", encoding="utf-8") as f:
         intents = json.load(f)["intents"]
     tags, patterns = [], []
@@ -48,6 +49,7 @@ def load_model(_version="v11"):
         for pattern in intent["patterns"]:
             tags.append(intent["tag"])
             patterns.append(pattern.lower())
+    
     model = SentenceTransformer("all-MiniLM-L6-v2")
     if os.path.exists(cache_path):
         with open(cache_path, "rb") as f:
@@ -61,6 +63,7 @@ def load_model(_version="v11"):
         except Exception:
             pass  # read-only filesystem on cloud — skip caching
     model.encode(["warmup"], convert_to_numpy=True)
+    
     return intents, model, embeddings, tags
 
 intents, embedder, pattern_embeddings, pattern_tags = load_model("v15")
@@ -89,17 +92,22 @@ def speak_text(text):
 
 def recognize_speech():
     import sys
+    import speech_recognition as sr
     if sys.platform != "win32":
-        return ""  # Microphone not supported on cloud
+        return "", "Microphone not supported on this platform"
     try:
-        import speech_recognition as sr
         r = sr.Recognizer()
         with sr.Microphone() as source:
             r.adjust_for_ambient_noise(source, duration=0.5)
             audio = r.listen(source, timeout=8, phrase_time_limit=10)
-        return r.recognize_google(audio)
-    except Exception:
-        return ""
+        text = r.recognize_google(audio)
+        return text, ""
+    except sr.RequestError as e:
+        return "", f"API request failed: {e}"
+    except sr.UnknownValueError:
+        return "", "Speech not understood. Please speak clearly."
+    except Exception as e:
+        return "", f"Error: {e}"
 
 # ── Slang / gibberish / typo ───────────────────────────────────────────────────
 SLANG = {
@@ -223,8 +231,8 @@ def resolve_context(user_input, last_dept):
         return user_input, LAB_DIRECT_TAG[inp]
     dept_keywords = [
         ("computer science","cse"),("data science","csd"),("machine learning","csm"),
-        ("electronics","ece"),("electrical","eee"),("mechanical","mech"),
-        ("cse","cse"),("csd","csd"),("csm","csm"),("ece","ece"),("eee","eee"),("mech","mech"),
+        ("electronics","ece"),("electrical","eee"),("mechanical","mech"),("civil","civil"),
+        ("cse","cse"),("csd","csd"),("csm","csm"),("ece","ece"),("eee","eee"),("mech","mech"),("civil","civil"),
     ]
     detected_dept = None
     for kw, dept in dept_keywords:
@@ -275,6 +283,8 @@ def chatbot_reply(user_input):
             "Could you say a bit more? I want to make sure I help you correctly!",
             "That's a bit short for me to understand. What would you like to know?",
         ])
+    if stripped in {"civil", "civil engineering"}:
+        return "I don't have Civil branch details available right now. Please ask about CSE, ECE, EEE, CSD, or CSM."
     if is_gibberish(stripped):
         return random.choice([
             "That doesn't look like a valid question. Try asking about fees, faculty, labs, bus routes, or events!",
@@ -435,13 +445,24 @@ _voice_on = st.session_state.get("voice_output", False)
 _voice_label = "🔊 ON" if _voice_on else "🔇 OFF"
 
 with st.form("chat_form", clear_on_submit=True):
-    ci, c_send, c_voice, c_clear = st.columns([5, 1, 1, 1])
+    ci, c_send, c_voice_out, c_voice_in, c_clear = st.columns([4, 1, 1, 1, 1])
     user_input = ci.text_input("msg", label_visibility="collapsed",
                                placeholder="💬 Type your message...", key="user_msg_form")
     send  = c_send.form_submit_button("Send",        use_container_width=True)
-    voice = c_voice.form_submit_button(_voice_label, use_container_width=True)
+    voice_out = c_voice_out.form_submit_button(_voice_label, use_container_width=True)
+    voice_in = c_voice_in.form_submit_button("🎤", use_container_width=True)
     clear = c_clear.form_submit_button("Clear",      use_container_width=True)
-    if voice: st.session_state["_toggle_voice"] = True; st.rerun()
+    if voice_out: st.session_state["_toggle_voice"] = True; st.rerun()
     if send and user_input.strip(): process(user_input.strip()); st.rerun()
+    if voice_in:
+        with st.spinner("Listening..."):
+            text, error = recognize_speech()
+            if text:
+                process(text)
+            elif error:
+                st.error(f"Speech recognition failed: {error}")
+            else:
+                st.error("Could not recognize speech. Please try again.")
+        st.rerun()
     if clear: clear_chat(); st.rerun()
 st.markdown('</div>', unsafe_allow_html=True)
