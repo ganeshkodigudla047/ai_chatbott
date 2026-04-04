@@ -445,24 +445,13 @@ _voice_on = st.session_state.get("voice_output", False)
 _voice_label = "🔊 ON" if _voice_on else "🔇 OFF"
 
 with st.form("chat_form", clear_on_submit=True):
-    ci, c_send, c_voice_out, c_voice_in, c_clear = st.columns([4, 1, 1, 1, 1])
+    ci, c_send, c_voice_out, c_clear = st.columns([4, 1, 1, 1])
     user_input = ci.text_input("msg", label_visibility="collapsed",
                                placeholder="💬 Type your message...", key="user_msg_form")
     send  = c_send.form_submit_button("Send",        use_container_width=True)
     voice_out = c_voice_out.form_submit_button(_voice_label, use_container_width=True)
-    voice_in = c_voice_in.form_submit_button("🎤", use_container_width=True)
     clear = c_clear.form_submit_button("Clear",      use_container_width=True)
     if voice_out: st.session_state["_toggle_voice"] = True; st.rerun()
     if send and user_input.strip(): process(user_input.strip()); st.rerun()
-    if voice_in:
-        with st.spinner("Listening..."):
-            text, error = recognize_speech()
-            if text:
-                process(text)
-            elif error:
-                st.error(f"Speech recognition failed: {error}")
-            else:
-                st.error("Could not recognize speech. Please try again.")
-        st.rerun()
     if clear: clear_chat(); st.rerun()
 st.markdown('</div>', unsafe_allow_html=True)
