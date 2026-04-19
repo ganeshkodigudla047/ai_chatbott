@@ -13,6 +13,68 @@ ssl._create_default_https_context = ssl._create_unverified_context
 
 st.set_page_config(page_title="Avanthi College Assistant", page_icon="🎓", layout="wide")
 
+# ── Intro animation (shown once per session) ───────────────────────────────────
+if "intro_shown" not in st.session_state:
+    st.session_state["intro_shown"] = False
+
+if not st.session_state["intro_shown"]:
+    st.session_state["intro_shown"] = True
+
+    # Inject the full-page overlay via markdown (covers entire viewport)
+    st.markdown("""
+<div id="kiro-splash" style="
+  position:fixed;top:0;left:0;width:100vw;height:100vh;
+  background:#0d1b2a;z-index:99999;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  gap:22px;font-family:'Segoe UI',sans-serif;
+">
+  <div style="font-size:80px;animation:splashPop .7s cubic-bezier(.34,1.56,.64,1) .1s both;">🎓</div>
+  <div style="color:#fff;font-size:28px;font-weight:800;text-align:center;max-width:640px;line-height:1.4;animation:splashUp .6s ease .4s both;">
+    Welcome to the <span style="color:#4a90d9;">AI Driven Smart Assistant</span> College Chatbot
+  </div>
+  <div style="color:#8aa0c0;font-size:14px;animation:splashUp .6s ease .7s both;">
+    Avanthi Institute of Engineering &amp; Technology
+  </div>
+  <div style="width:260px;height:5px;background:rgba(255,255,255,.12);border-radius:6px;overflow:hidden;animation:splashUp .5s ease .9s both;">
+    <div style="height:100%;width:0;background:linear-gradient(90deg,#4a90d9,#a0c4ff);border-radius:6px;animation:splashLoad 2s ease 1.1s forwards;"></div>
+  </div>
+  <div style="display:flex;gap:8px;animation:splashUp .5s ease 1s both;">
+    <div style="width:8px;height:8px;border-radius:50%;background:#4a90d9;animation:splashBounce 1.2s ease infinite;"></div>
+    <div style="width:8px;height:8px;border-radius:50%;background:#4a90d9;animation:splashBounce 1.2s ease .2s infinite;"></div>
+    <div style="width:8px;height:8px;border-radius:50%;background:#4a90d9;animation:splashBounce 1.2s ease .4s infinite;"></div>
+  </div>
+</div>
+<style>
+@keyframes splashPop{from{transform:scale(0) rotate(-10deg);opacity:0}to{transform:scale(1) rotate(0);opacity:1}}
+@keyframes splashUp{from{transform:translateY(24px);opacity:0}to{transform:translateY(0);opacity:1}}
+@keyframes splashLoad{from{width:0}to{width:100%}}
+@keyframes splashBounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+@keyframes splashZoomOut{
+  0%  {transform:scale(1);   opacity:1;}
+  100%{transform:scale(3.5); opacity:0;}
+}
+</style>
+""", unsafe_allow_html=True)
+
+    # Use components.html to run JS in the parent document to trigger zoom-out and remove overlay
+    components.html("""
+<script>
+(function(){
+  function triggerZoom(){
+    var el = window.parent.document.getElementById('kiro-splash');
+    if(el){
+      el.style.transition = 'none';
+      el.style.animation = 'splashZoomOut .8s cubic-bezier(.4,0,.2,1) forwards';
+      setTimeout(function(){ el.style.display = 'none'; }, 850);
+    }
+  }
+  setTimeout(triggerZoom, 3200);
+})();
+</script>
+""", height=0, scrolling=False)
+
+    import time; time.sleep(4.0)
+
 st.markdown("""
 <style>
 #MainMenu, footer, header { visibility: hidden; }
